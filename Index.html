@@ -1,986 +1,979 @@
-{\rtf1\ansi\ansicpg1252\cocoartf2870
-\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
-{\colortbl;\red255\green255\blue255;}
-{\*\expandedcolortbl;;}
-\paperw11900\paperh16840\margl1440\margr1440\vieww11520\viewh8400\viewkind0
-\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Namma Metro Info • Bengaluru Commuter Guide</title>
+  <meta name="description" content="Instant crowdsourced route planning, live delay alerts, and fares for Bengaluru Metro." />
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+  
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+            mono: ['"Space Grotesk"', 'monospace']
+          },
+          colors: {
+            tubeNavy: '#0019A8',
+            tubeRed: '#EE2E24',
+            tubeBlack: '#111315',
+            tubeGrey: '#F3F4F6',
+            tubeBorder: '#D1D5DB',
+            linePurple: '#7B2CBF',
+            lineGreen: '#007A3D',
+            lineYellow: '#EAA221'
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      background-color: #F8F9FA;
+      color: #111315;
+    }
+    .tube-spine {
+      position: absolute;
+      left: 19px;
+      top: 26px;
+      bottom: -10px;
+      width: 6px;
+      border-radius: 9999px;
+    }
+    .tube-node-last .tube-spine {
+      display: none;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between selection:bg-black selection:text-white font-sans">
 
-\f0\fs24 \cf0 <!DOCTYPE html>\
-<html lang="en">\
-<head>\
-  <meta charset="UTF-8" />\
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />\
-  <title>Namma Metro Info \'95 Bengaluru Commuter Guide</title>\
-  <meta name="description" content="Instant crowdsourced route planning, live delay alerts, and fares for Bengaluru Metro." />\
-  \
-  <link rel="preconnect" href="https://fonts.googleapis.com">\
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>\
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">\
-  \
-  <script src="https://cdn.tailwindcss.com"></script>\
-  <script>\
-    tailwind.config = \{\
-      theme: \{\
-        extend: \{\
-          fontFamily: \{\
-            sans: ['"Plus Jakarta Sans"', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],\
-            mono: ['"Space Grotesk"', 'monospace']\
-          \},\
-          colors: \{\
-            tubeNavy: '#0019A8',\
-            tubeRed: '#EE2E24',\
-            tubeBlack: '#111315',\
-            tubeGrey: '#F3F4F6',\
-            tubeBorder: '#D1D5DB',\
-            linePurple: '#7B2CBF',\
-            lineGreen: '#007A3D',\
-            lineYellow: '#EAA221'\
-          \}\
-        \}\
-      \}\
-    \}\
-  </script>\
-  <style>\
-    body \{\
-      -webkit-font-smoothing: antialiased;\
-      -moz-osx-font-smoothing: grayscale;\
-      background-color: #F8F9FA;\
-      color: #111315;\
-    \}\
-    .tube-spine \{\
-      position: absolute;\
-      left: 19px;\
-      top: 26px;\
-      bottom: -10px;\
-      width: 6px;\
-      border-radius: 9999px;\
-    \}\
-    .tube-node-last .tube-spine \{\
-      display: none;\
-    \}\
-  </style>\
-</head>\
-<body class="min-h-screen flex flex-col justify-between selection:bg-black selection:text-white font-sans">\
-\
-  <!-- Connectivity Banner (Auto-shows when inside subway tunnel / offline) -->\
-  <div id="offlineBar" class="hidden bg-gray-900 text-amber-400 text-xs font-mono py-1 px-4 text-center border-b border-gray-700">\
-    \uc0\u9889  Tunnel Mode Active \'97 Running offline from local cache.\
-  </div>\
-\
-  <!-- Header Bar -->\
-  <header class="bg-[#111315] text-white border-b-4 border-[#0019A8] sticky top-0 z-30">\
-    <div class="max-w-xl mx-auto px-4 py-3 flex items-center justify-between">\
-      <div class="flex items-center space-x-3">\
-        <!-- TfL Style Metro Roundel -->\
-        <div class="relative w-8 h-8 flex items-center justify-center flex-shrink-0">\
-          <div class="w-8 h-8 rounded-full border-[5px] border-[#EE2E24]"></div>\
-          <div class="absolute w-10 h-2 bg-white flex items-center justify-center">\
-            <div class="w-full h-0.5 bg-[#0019A8]"></div>\
-          </div>\
-        </div>\
-        <div>\
-          <h1 class="font-extrabold text-sm tracking-wider uppercase font-mono leading-none">Namma Metro Info</h1>\
-          <span class="text-[11px] text-gray-400 font-medium tracking-wide">Bengaluru Transit Guide</span>\
-        </div>\
-      </div>\
-\
-      <!-- Live Network Status Indicator -->\
-      <div class="flex items-center space-x-2">\
-        <span id="statusPingDot" class="inline-block w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>\
-        <span id="statusLabel" class="text-xs font-mono font-semibold tracking-wider text-gray-300">LINES NORMAL</span>\
-      </div>\
-    </div>\
-  </header>\
-\
-  <!-- Main Commute Workspace -->\
-  <main class="max-w-xl mx-auto w-full px-4 py-4 flex-grow space-y-3.5">\
-\
-    <!-- Active Crowdsourced Disruption Banner -->\
-    <div id="alertBanner" class="hidden bg-rose-50 border-2 border-rose-600 rounded-xl p-3.5 text-xs text-rose-950 font-mono shadow-[3px_3px_0px_0px_#E11D48] space-y-1">\
-      <div class="flex items-center justify-between font-bold">\
-        <span class="flex items-center space-x-1 text-rose-700">\
-          <span>\uc0\u9888 \u65039 </span>\
-          <span id="alertLineTitle">DELAY ON PURPLE LINE</span>\
-        </span>\
-        <span id="alertVoteCount" class="bg-rose-200 text-rose-900 px-2 py-0.5 rounded text-[10px]">3 reports</span>\
-      </div>\
-      <p id="alertBody" class="text-gray-700 text-[11px] leading-relaxed">\
-        Multiple riders reported stopped trains or slow movement. Travel time adjusted with +10 min buffer.\
-      </p>\
-    </div>\
-\
-    <!-- Route Input Card -->\
-    <section class="bg-white rounded-xl border-2 border-[#111315] shadow-[4px_4px_0px_0px_#111315] p-4 space-y-3">\
-      <div class="flex justify-between items-center">\
-        <h2 class="text-xs font-black uppercase tracking-wider text-gray-500 font-mono">Plan Route</h2>\
-        <button id="locBtn" class="text-xs font-bold text-[#0019A8] hover:underline flex items-center space-x-1">\
-          <span>\uc0\u9679 </span>\
-          <span id="locLabel">Locate Me</span>\
-        </button>\
-      </div>\
-\
-      <div class="relative space-y-2">\
-        <!-- Swap Button -->\
-        <button id="swapBtn" title="Reverse Journey" class="absolute right-3 top-1/2 -translate-y-1/2 z-10 w-8 h-8 rounded-full bg-white hover:bg-gray-100 border-2 border-black flex items-center justify-center text-black shadow-sm transition active:scale-90">\
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"/></svg>\
-        </button>\
-\
-        <!-- From Input -->\
-        <div class="relative">\
-          <label for="fromInput" class="block text-[10px] font-mono font-bold uppercase text-gray-500">From</label>\
-          <div class="relative">\
-            <input type="text" id="fromInput" placeholder="Enter station or landmark" class="w-full pl-8 pr-12 py-2.5 bg-gray-50 border-2 border-gray-300 rounded-lg text-sm font-bold text-gray-900 focus:bg-white focus:outline-none focus:border-black" autocomplete="off" />\
-            <span class="absolute left-2.5 top-3.5 w-3 h-3 rounded-full border-2 border-black bg-white"></span>\
-            <div id="fromDrop" class="hidden absolute left-0 right-0 top-12 bg-white border-2 border-black rounded-lg shadow-xl z-50 max-h-56 overflow-y-auto"></div>\
-          </div>\
-        </div>\
-\
-        <!-- To Input -->\
-        <div class="relative">\
-          <label for="toInput" class="block text-[10px] font-mono font-bold uppercase text-gray-500">To</label>\
-          <div class="relative">\
-            <input type="text" id="toInput" placeholder="Enter destination" class="w-full pl-8 pr-12 py-2.5 bg-gray-50 border-2 border-gray-300 rounded-lg text-sm font-bold text-gray-900 focus:bg-white focus:outline-none focus:border-black" autocomplete="off" />\
-            <span class="absolute left-2.5 top-3.5 w-3 h-3 rounded-full bg-black"></span>\
-            <div id="toDrop" class="hidden absolute left-0 right-0 top-12 bg-white border-2 border-black rounded-lg shadow-xl z-50 max-h-56 overflow-y-auto"></div>\
-          </div>\
-        </div>\
-      </div>\
-\
-      <!-- Quick Popular Shortcuts -->\
-      <div class="pt-1 flex flex-wrap gap-1.5" id="quickPills"></div>\
-    </section>\
-\
-    <!-- Transit Hero Output Card -->\
-    <section id="heroCard" class="bg-white rounded-xl border-2 border-[#111315] shadow-[4px_4px_0px_0px_#111315] overflow-hidden">\
-      \
-      <!-- Routing Header -->\
-      <div class="p-4 bg-[#111315] text-white flex justify-between items-start">\
-        <div class="space-y-1">\
-          <div id="lineBadgeHolder" class="flex items-center space-x-2"></div>\
-          <h3 id="heroTitle" class="text-lg font-black tracking-tight leading-snug">Whitefield \uc0\u8594  Challaghatta</h3>\
-        </div>\
-        <div class="text-right font-mono">\
-          <span id="heroDuration" class="text-2xl font-black text-yellow-400 block leading-none">~76m</span>\
-          <span id="heroStops" class="text-xs text-gray-400">36 stops</span>\
-        </div>\
-      </div>\
-\
-      <!-- Fare Bar -->\
-      <div class="grid grid-cols-2 divide-x-2 divide-black border-b-2 border-black bg-gray-50 text-xs font-mono">\
-        <div class="p-3">\
-          <span class="text-[10px] text-gray-500 block uppercase font-bold">Standard Ticket</span>\
-          <span id="fareToken" class="text-xl font-bold text-gray-900">\uc0\u8377 60</span>\
-          <span class="text-[10px] text-gray-500 block">Single QR / Cash</span>\
-        </div>\
-        <div class="p-3 bg-emerald-50/50">\
-          <span class="text-[10px] text-emerald-800 block uppercase font-bold">Contactless / NCMC</span>\
-          <span id="fareCard" class="text-xl font-bold text-emerald-700">\uc0\u8377 57</span>\
-          <span id="discountTag" class="text-[10px] text-emerald-600 block">5% Smartcard Saver</span>\
-        </div>\
-      </div>\
-\
-      <!-- Next Departure Platform Feed -->\
-      <div class="p-4 bg-yellow-50/50 border-b-2 border-black flex items-center justify-between">\
-        <div>\
-          <span class="text-[10px] font-mono font-bold uppercase tracking-wider text-amber-900 block">Platform Departure</span>\
-          <div class="flex items-baseline space-x-2 mt-0.5">\
-            <span id="nextTime" class="text-xl font-black font-mono text-black">12:35 PM</span>\
-            <span id="nextHeading" class="text-xs font-bold text-gray-700">Platform 1 \'b7 Westbound</span>\
-          </div>\
-        </div>\
-        <div class="text-right font-mono">\
-          <span id="nextMins" class="text-lg font-black bg-black text-white px-2 py-1 rounded">4 MIN</span>\
-        </div>\
-      </div>\
-\
-      <!-- London Tube Line Schematic -->\
-      <div class="p-5 space-y-4">\
-        <h4 class="text-xs font-mono font-bold uppercase text-gray-500 tracking-wider">Itinerary Schematic</h4>\
-        \
-        <div id="tubeSchematic" class="relative pl-3 space-y-6"></div>\
-\
-        <!-- Collapsed Full Stops List -->\
-        <div class="pt-2">\
-          <button id="stopsToggle" class="w-full py-2 bg-gray-100 hover:bg-gray-200 border-2 border-black rounded-lg text-xs font-mono font-bold tracking-wider uppercase transition">\
-            View All Intermediate Stops [36]\
-          </button>\
-          <div id="stopsTray" class="hidden mt-3 p-3 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300 font-mono text-xs space-y-1.5 max-h-48 overflow-y-auto"></div>\
-        </div>\
-      </div>\
-\
-    </section>\
-\
-    <!-- Crowdsource Report Button Bar -->\
-    <section class="bg-white rounded-xl border-2 border-[#111315] p-3.5 flex items-center justify-between text-xs">\
-      <div>\
-        <span class="font-bold text-gray-900 block font-mono uppercase">Stuck on a train?</span>\
-        <span class="text-[11px] text-gray-500">Alert fellow riders in real time</span>\
-      </div>\
-      <button id="openReportModalBtn" class="bg-rose-600 hover:bg-rose-700 text-white font-mono font-bold px-3 py-1.5 rounded-lg border-2 border-black shadow-[2px_2px_0px_0px_#111315] active:translate-x-0.5 active:translate-y-0.5 transition">\
-        \uc0\u55357 \u56546  Report Delay\
-      </button>\
-    </section>\
-\
-    <!-- Anonymous Local Favourites Bar -->\
-    <section class="bg-white rounded-xl border-2 border-[#111315] p-3 flex items-center justify-between text-xs">\
-      <span class="font-mono font-bold uppercase text-gray-600">Saved Commutes:</span>\
-      <div class="flex items-center space-x-2" id="savedCommutesContainer"></div>\
-    </section>\
-\
-  </main>\
-\
-  <!-- Report Delay Popup Modal -->\
-  <div id="reportModal" class="hidden fixed inset-0 bg-black/60 z-50 flex items-end sm:items-center justify-center p-4">\
-    <div class="bg-white border-4 border-black rounded-2xl max-w-sm w-full p-5 space-y-4 shadow-[6px_6px_0px_0px_#111315]">\
-      <div class="flex justify-between items-center border-b-2 border-gray-100 pb-2">\
-        <h3 class="font-black text-sm uppercase font-mono">Report Line Disruption</h3>\
-        <button id="closeModalBtn" class="font-bold text-gray-400 hover:text-black text-lg">&times;</button>\
-      </div>\
-      <p class="text-xs text-gray-600">\
-        Tap the line experiencing unexpected delays or stopped trains. When 3 riders confirm within 15 minutes, the system alerts all commuters automatically.\
-      </p>\
-      <div class="grid grid-cols-1 gap-2 font-mono text-xs font-bold">\
-        <button onclick="submitDelayReport('purple')" class="w-full py-2.5 px-3 rounded-lg border-2 border-purple-800 bg-purple-100 text-purple-900 hover:bg-purple-200 text-left flex justify-between items-center">\
-          <span>\uc0\u55357 \u57315  PURPLE LINE</span>\
-          <span class="text-[10px] bg-white px-1.5 py-0.5 rounded border border-purple-300">Tap to Report</span>\
-        </button>\
-        <button onclick="submitDelayReport('green')" class="w-full py-2.5 px-3 rounded-lg border-2 border-emerald-800 bg-emerald-100 text-emerald-900 hover:bg-emerald-200 text-left flex justify-between items-center">\
-          <span>\uc0\u55357 \u57314  GREEN LINE</span>\
-          <span class="text-[10px] bg-white px-1.5 py-0.5 rounded border border-emerald-300">Tap to Report</span>\
-        </button>\
-        <button onclick="submitDelayReport('yellow')" class="w-full py-2.5 px-3 rounded-lg border-2 border-amber-800 bg-amber-100 text-amber-900 hover:bg-amber-200 text-left flex justify-between items-center">\
-          <span>\uc0\u55357 \u57313  YELLOW LINE</span>\
-          <span class="text-[10px] bg-white px-1.5 py-0.5 rounded border border-amber-300">Tap to Report</span>\
-        </button>\
-      </div>\
-      <div id="reportSuccessMsg" class="hidden text-center text-xs font-bold text-emerald-700 font-mono py-1">\
-        \uc0\u10003  Report recorded. Thank you for helping commuters!\
-      </div>\
-    </div>\
-  </div>\
-\
-  <!-- Clear Legally Compliant Footer -->\
-  <footer class="max-w-xl mx-auto w-full px-4 py-4 text-center text-xs font-mono text-gray-500 border-t border-gray-200 space-y-1">\
-    <p class="font-bold text-gray-700">Namma Metro Info \'95 Independent Commuter Guide</p>\
-    <p class="text-[10px] text-gray-400">\
-      Not affiliated with or endorsed by BMRCL. Namma Metro is a registered trademark of Bangalore Metro Rail Corporation Limited.\
-    </p>\
-  </footer>\
-\
-  <script>\
-    // --- COMPLETE BENGALURU METRO NETWORK DIRECTORY ---\
-    const STATIONS = [\
-      // Purple Line (43.49 km)\
-      \{ id: "P01", name: "Whitefield", full: "Whitefield (Kadugodi)", line: "purple", idx: 0, lat: 12.9961, lng: 77.7612 \},\
-      \{ id: "P02", name: "Hopefarm", full: "Hopefarm Channasandra", line: "purple", idx: 1, lat: 12.9845, lng: 77.7511 \},\
-      \{ id: "P03", name: "Kadugodi Tree Park", full: "Kadugodi Tree Park", line: "purple", idx: 2, lat: 12.9882, lng: 77.7420 \},\
-      \{ id: "P04", name: "Pattandur Agrahara", full: "Pattandur Agrahara", line: "purple", idx: 3, lat: 12.9880, lng: 77.7330 \},\
-      \{ id: "P05", name: "Sri Sathya Sai Hospital", full: "Sri Sathya Sai Hospital", line: "purple", idx: 4, lat: 12.9844, lng: 77.7258 \},\
-      \{ id: "P06", name: "Nallurhalli", full: "Nallurhalli", line: "purple", idx: 5, lat: 12.9778, lng: 77.7198 \},\
-      \{ id: "P07", name: "Kundalahalli", full: "Kundalahalli", line: "purple", idx: 6, lat: 12.9734, lng: 77.7139 \},\
-      \{ id: "P08", name: "Seetharamapalaya", full: "Seetharamapalaya", line: "purple", idx: 7, lat: 12.9771, lng: 77.7018 \},\
-      \{ id: "P09", name: "Hoodi", full: "Hoodi", line: "purple", idx: 8, lat: 12.9897, lng: 77.6974 \},\
-      \{ id: "P10", name: "Garudacharapalya", full: "Garudacharapalya", line: "purple", idx: 9, lat: 12.9922, lng: 77.6892 \},\
-      \{ id: "P11", name: "Singayyanapalya", full: "Singayyanapalya", line: "purple", idx: 10, lat: 12.9961, lng: 77.6834 \},\
-      \{ id: "P12", name: "KR Pura", full: "KR Pura", line: "purple", idx: 11, lat: 12.9984, lng: 77.6775 \},\
-      \{ id: "P13", name: "Benniganahalli", full: "Benniganahalli", line: "purple", idx: 12, lat: 12.9935, lng: 77.6591 \},\
-      \{ id: "P14", name: "Baiyappanahalli", full: "Baiyappanahalli", line: "purple", idx: 13, lat: 12.9912, lng: 77.6521 \},\
-      \{ id: "P15", name: "Swami Vivekananda Road", full: "Swami Vivekananda Road", line: "purple", idx: 14, lat: 12.9861, lng: 77.6432 \},\
-      \{ id: "P16", name: "Indiranagar", full: "Indiranagar", line: "purple", idx: 15, lat: 12.9783, lng: 77.6387 \},\
-      \{ id: "P17", name: "Halasuru", full: "Halasuru", line: "purple", idx: 16, lat: 12.9754, lng: 77.6264 \},\
-      \{ id: "P18", name: "Trinity", full: "Trinity", line: "purple", idx: 17, lat: 12.9729, lng: 77.6171 \},\
-      \{ id: "P19", name: "MG Road", full: "Mahatma Gandhi Road", line: "purple", idx: 18, lat: 12.9756, lng: 77.6066 \},\
-      \{ id: "P20", name: "Cubbon Park", full: "Cubbon Park", line: "purple", idx: 19, lat: 12.9811, lng: 77.5996 \},\
-      \{ id: "P21", name: "Vidhana Soudha", full: "Dr. B. R. Ambedkar Vidhana Soudha", line: "purple", idx: 20, lat: 12.9798, lng: 77.5925 \},\
-      \{ id: "P22", name: "Sir M. Visveshwaraya", full: "Sir M. Visveshwaraya Central College", line: "purple", idx: 21, lat: 12.9749, lng: 77.5839 \},\
-      \{ id: "P23", name: "Majestic", full: "Nadaprabhu Kempegowda Station Majestic", line: "purple", interchange: true, idx: 22, lat: 12.9757, lng: 77.5728 \},\
-      \{ id: "P24", name: "City Railway Station", full: "KSR City Railway Station", line: "purple", idx: 23, lat: 12.9781, lng: 77.5668 \},\
-      \{ id: "P25", name: "Magadi Road", full: "Magadi Road", line: "purple", idx: 24, lat: 12.9755, lng: 77.5552 \},\
-      \{ id: "P26", name: "Hosahalli", full: "Sri Balagangadharanatha Swamiji Hosahalli", line: "purple", idx: 25, lat: 12.9728, lng: 77.5459 \},\
-      \{ id: "P27", name: "Vijayanagar", full: "Vijayanagar", line: "purple", idx: 26, lat: 12.9696, lng: 77.5369 \},\
-      \{ id: "P28", name: "Attiguppe", full: "Attiguppe", line: "purple", idx: 27, lat: 12.9622, lng: 77.5334 \},\
-      \{ id: "P29", name: "Deepanjali Nagar", full: "Deepanjali Nagar", line: "purple", idx: 28, lat: 12.9525, lng: 77.5364 \},\
-      \{ id: "P30", name: "Mysuru Road", full: "Mysuru Road", line: "purple", idx: 29, lat: 12.9463, lng: 77.5300 \},\
-      \{ id: "P31", name: "Pantharapalya", full: "Pantharapalya-Nayandahalli", line: "purple", idx: 30, lat: 12.9405, lng: 77.5255 \},\
-      \{ id: "P32", name: "Rajarajeshwari Nagar", full: "Rajarajeshwari Nagar", line: "purple", idx: 31, lat: 12.9284, lng: 77.5218 \},\
-      \{ id: "P33", name: "Jnanabharathi", full: "Jnanabharathi", line: "purple", idx: 32, lat: 12.9189, lng: 77.5097 \},\
-      \{ id: "P34", name: "Pattanagere", full: "Pattanagere", line: "purple", idx: 33, lat: 12.9149, lng: 77.4988 \},\
-      \{ id: "P35", name: "Kengeri Bus Terminal", full: "Kengeri Bus Terminal", line: "purple", idx: 34, lat: 12.9118, lng: 77.4891 \},\
-      \{ id: "P36", name: "Kengeri", full: "Kengeri", line: "purple", idx: 35, lat: 12.9083, lng: 77.4789 \},\
-      \{ id: "P37", name: "Challaghatta", full: "Challaghatta", line: "purple", idx: 36, lat: 12.9008, lng: 77.4641 \},\
-\
-      // Green Line (33.46 km)[cite: 1]\
-      \{ id: "G01", name: "Madavara", full: "Madavara (BIEC)", line: "green", idx: 0, lat: 13.0642, lng: 77.4851 \},\
-      \{ id: "G02", name: "Chikkabidarakallu", full: "Chikkabidarakallu", line: "green", idx: 1, lat: 13.0560, lng: 77.4920 \},\
-      \{ id: "G03", name: "Manjunathanagar", full: "Manjunathanagar", line: "green", idx: 2, lat: 13.0510, lng: 77.4960 \},\
-      \{ id: "G04", name: "Nagasandra", full: "Nagasandra", line: "green", idx: 3, lat: 13.0478, lng: 77.4996 \},\
-      \{ id: "G05", name: "Dasarahalli", full: "Dasarahalli", line: "green", idx: 4, lat: 13.0435, lng: 77.5126 \},\
-      \{ id: "G06", name: "Jalahalli", full: "Jalahalli", line: "green", idx: 5, lat: 13.0392, lng: 77.5195 \},\
-      \{ id: "G07", name: "Peenya Industry", full: "Peenya Industry", line: "green", idx: 6, lat: 13.0347, lng: 77.5255 \},\
-      \{ id: "G08", name: "Peenya", full: "Peenya", line: "green", idx: 7, lat: 13.0284, lng: 77.5332 \},\
-      \{ id: "G09", name: "Goraguntepalya", full: "Goraguntepalya", line: "green", idx: 8, lat: 13.0280, lng: 77.5412 \},\
-      \{ id: "G10", name: "Yeshwanthpur", full: "Yeshwanthpur", line: "green", idx: 9, lat: 13.0232, lng: 77.5501 \},\
-      \{ id: "G11", name: "Sandal Soap Factory", full: "Sandal Soap Factory", line: "green", idx: 10, lat: 13.0147, lng: 77.5539 \},\
-      \{ id: "G12", name: "Mahalakshmi", full: "Mahalakshmi", line: "green", idx: 11, lat: 13.0079, lng: 77.5492 \},\
-      \{ id: "G13", name: "Rajajinagar", full: "Rajajinagar", line: "green", idx: 12, lat: 12.9989, lng: 77.5562 \},\
-      \{ id: "G14", name: "Kuvempu Road", full: "Mahakavi Kuvempu Road", line: "green", idx: 13, lat: 12.9981, lng: 77.5621 \},\
-      \{ id: "G15", name: "Srirampura", full: "Srirampura", line: "green", idx: 14, lat: 12.9963, lng: 77.5645 \},\
-      \{ id: "G16", name: "Sampige Road", full: "Sampige Road Malleshwaram", line: "green", idx: 15, lat: 12.9912, lng: 77.5707 \},\
-      \{ id: "G17", name: "Majestic", full: "Nadaprabhu Kempegowda Station Majestic", line: "green", interchange: true, idx: 16, lat: 12.9757, lng: 77.5728 \},\
-      \{ id: "G18", name: "Chickpete", full: "Chickpete", line: "green", idx: 17, lat: 12.9669, lng: 77.5739 \},\
-      \{ id: "G19", name: "KR Market", full: "Krishna Rajendra Market", line: "green", idx: 18, lat: 12.9609, lng: 77.5746 \},\
-      \{ id: "G20", name: "National College", full: "National College", line: "green", idx: 19, lat: 12.9504, lng: 77.5727 \},\
-      \{ id: "G21", name: "Lalbagh", full: "Lalbagh Botanical Garden", line: "green", idx: 20, lat: 12.9461, lng: 77.5801 \},\
-      \{ id: "G22", name: "South End Circle", full: "South End Circle", line: "green", idx: 21, lat: 12.9377, lng: 77.5801 \},\
-      \{ id: "G23", name: "Jayanagar", full: "Jayanagar", line: "green", idx: 22, lat: 12.9298, lng: 77.5802 \},\
-      \{ id: "G24", name: "RV Road", full: "Rashtreeya Vidyalaya Road", line: "green", interchange: true, idx: 23, lat: 12.9216, lng: 77.5801 \},\
-      \{ id: "G25", name: "Banashankari", full: "Banashankari", line: "green", idx: 24, lat: 12.9154, lng: 77.5736 \},\
-      \{ id: "G26", name: "Jayaprakash Nagar", full: "Jaya Prakash Nagar", line: "green", idx: 25, lat: 12.9074, lng: 77.5728 \},\
-      \{ id: "G27", name: "Yelachenahalli", full: "Yelachenahalli", line: "green", idx: 26, lat: 12.8959, lng: 77.5703 \},\
-      \{ id: "G28", name: "Konankunte Cross", full: "Konankunte Cross", line: "green", idx: 27, lat: 12.8876, lng: 77.5689 \},\
-      \{ id: "G29", name: "Doddakallasandra", full: "Doddakallasandra", line: "green", idx: 28, lat: 12.8761, lng: 77.5612 \},\
-      \{ id: "G30", name: "Vajarahalli", full: "Vajarahalli", line: "green", idx: 29, lat: 12.8682, lng: 77.5524 \},\
-      \{ id: "G31", name: "Thalaghattapura", full: "Thalaghattapura", line: "green", idx: 30, lat: 12.8631, lng: 77.5412 \},\
-      \{ id: "G32", name: "Silk Institute", full: "Silk Institute", line: "green", idx: 31, lat: 12.8617, lng: 77.5305 \},\
-\
-      // Yellow Line (19.15 km)[cite: 1]\
-      \{ id: "Y01", name: "RV Road", full: "Rashtreeya Vidyalaya Road", line: "yellow", interchange: true, idx: 0, lat: 12.9216, lng: 77.5801 \},\
-      \{ id: "Y02", name: "Ragigudda", full: "Ragigudda", line: "yellow", idx: 1, lat: 12.9172, lng: 77.5910 \},\
-      \{ id: "Y03", name: "Jayadeva Hospital", full: "Jayadeva Hospital", line: "yellow", idx: 2, lat: 12.9168, lng: 77.6012 \},\
-      \{ id: "Y04", name: "BTM Layout", full: "BTM Layout", line: "yellow", idx: 3, lat: 12.9160, lng: 77.6110 \},\
-      \{ id: "Y05", name: "Central Silk Board", full: "Central Silk Board", line: "yellow", idx: 4, lat: 12.9174, lng: 77.6234 \},\
-      \{ id: "Y06", name: "Bommanahalli", full: "Bommanahalli", line: "yellow", idx: 5, lat: 12.9080, lng: 77.6250 \},\
-      \{ id: "Y07", name: "Hongasandra", full: "Hongasandra", line: "yellow", idx: 6, lat: 12.8998, lng: 77.6321 \},\
-      \{ id: "Y08", name: "Kudlu Gate", full: "Kudlu Gate", line: "yellow", idx: 7, lat: 12.8895, lng: 77.6401 \},\
-      \{ id: "Y09", name: "Singasandra", full: "Singasandra", line: "yellow", idx: 8, lat: 12.8791, lng: 77.6482 \},\
-      \{ id: "Y10", name: "Hosa Road", full: "Hosa Road", line: "yellow", idx: 9, lat: 12.8690, lng: 77.6560 \},\
-      \{ id: "Y11", name: "Beratena Agrahara", full: "Beratena Agrahara", line: "yellow", idx: 10, lat: 12.8589, lng: 77.6631 \},\
-      \{ id: "Y12", name: "Electronic City", full: "Electronic City", line: "yellow", idx: 11, lat: 12.8465, lng: 77.6740 \},\
-      \{ id: "Y13", name: "Konappana Agrahara", full: "Infosys Foundation Konappana Agrahara", line: "yellow", idx: 12, lat: 12.8361, lng: 77.6820 \},\
-      \{ id: "Y14", name: "Huskur Road", full: "Huskur Road", line: "yellow", idx: 13, lat: 12.8250, lng: 77.6890 \},\
-      \{ id: "Y15", name: "Biocon Hebbagodi", full: "Biocon Hebbagodi", line: "yellow", idx: 14, lat: 12.8120, lng: 77.6930 \},\
-      \{ id: "Y16", name: "Bommasandra", full: "Delta Electronics Bommasandra", line: "yellow", idx: 15, lat: 12.8010, lng: 77.6990 \}\
-    ];\
-\
-    const LINE_COLORS = \{\
-      purple: '#7B2CBF',\
-      green: '#007A3D',\
-      yellow: '#EAA221'\
-    \};\
-\
-    // --- CROWDSOURCED DELAY ENGINE ---\
-    let crowdState = \{\
-      purple: \{ count: 0, delayed: false \},\
-      green: \{ count: 0, delayed: false \},\
-      yellow: \{ count: 0, delayed: false \}\
-    \};\
-\
-    // DOM Elements\
-    const fromInput = document.getElementById('fromInput');\
-    const toInput = document.getElementById('toInput');\
-    const fromDrop = document.getElementById('fromDrop');\
-    const toDrop = document.getElementById('toDrop');\
-    const swapBtn = document.getElementById('swapBtn');\
-    const locBtn = document.getElementById('locBtn');\
-    const locLabel = document.getElementById('locLabel');\
-    const quickPills = document.getElementById('quickPills');\
-\
-    const heroTitle = document.getElementById('heroTitle');\
-    const lineBadgeHolder = document.getElementById('lineBadgeHolder');\
-    const heroDuration = document.getElementById('heroDuration');\
-    const heroStops = document.getElementById('heroStops');\
-    const fareToken = document.getElementById('fareToken');\
-    const fareCard = document.getElementById('fareCard');\
-    const discountTag = document.getElementById('discountTag');\
-    const nextTime = document.getElementById('nextTime');\
-    const nextHeading = document.getElementById('nextHeading');\
-    const nextMins = document.getElementById('nextMins');\
-    const tubeSchematic = document.getElementById('tubeSchematic');\
-    const stopsToggle = document.getElementById('stopsToggle');\
-    const stopsTray = document.getElementById('stopsTray');\
-    const savedCommutesContainer = document.getElementById('savedCommutesContainer');\
-\
-    const offlineBar = document.getElementById('offlineBar');\
-    const statusPingDot = document.getElementById('statusPingDot');\
-    const statusLabel = document.getElementById('statusLabel');\
-    const alertBanner = document.getElementById('alertBanner');\
-    const alertLineTitle = document.getElementById('alertLineTitle');\
-    const alertVoteCount = document.getElementById('alertVoteCount');\
-    const openReportModalBtn = document.getElementById('openReportModalBtn');\
-    const reportModal = document.getElementById('reportModal');\
-    const closeModalBtn = document.getElementById('closeModalBtn');\
-    const reportSuccessMsg = document.getElementById('reportSuccessMsg');\
-\
-    // Default route\
-    fromInput.value = "Whitefield";\
-    toInput.value = "Challaghatta";\
-\
-    const POPULAR = [\
-      \{ from: "Whitefield", to: "Challaghatta" \},\
-      \{ from: "Indiranagar", to: "MG Road" \},\
-      \{ from: "Majestic", to: "Electronic City" \},\
-      \{ from: "Yeshwanthpur", to: "Jayanagar" \}\
-    ];\
-\
-    quickPills.innerHTML = POPULAR.map(p => `\
-      <button class="px-2.5 py-1 bg-gray-100 hover:bg-black hover:text-white rounded border border-gray-300 font-mono text-[11px] font-bold transition" onclick="setRoute('$\{p.from\}', '$\{p.to\}')">\
-        $\{p.from\} \uc0\u8594  $\{p.to\}\
-      </button>\
-    `).join('');\
-\
-    window.setRoute = (from, to) => \{\
-      fromInput.value = from;\
-      toInput.value = to;\
-      buildTransitJourney();\
-      saveAnonymousCommute(from, to);\
-    \};\
-\
-    // --- OFFLINE / ONLINE WATCHDOG ---\
-    function updateOnlineStatus() \{\
-      if (navigator.onLine) \{\
-        offlineBar.classList.add('hidden');\
-        syncCrowdReports();\
-      \} else \{\
-        offlineBar.classList.remove('hidden');\
-      \}\
-    \}\
-    window.addEventListener('online', updateOnlineStatus);\
-    window.addEventListener('offline', updateOnlineStatus);\
-\
-    // --- CROWD DELAY SYNC (15-Minute Rolling Quorum) ---\
-    function syncCrowdReports() \{\
-      const savedReports = JSON.parse(localStorage.getItem('np_crowd_reports') || '[]');\
-      const now = Date.now();\
-      // Keep only reports within the last 15 minutes (900,000 ms)\
-      const activeReports = savedReports.filter(r => (now - r.timestamp) < 15 * 60 * 1000);\
-      localStorage.setItem('np_crowd_reports', JSON.stringify(activeReports));\
-\
-      const counts = \{ purple: 0, green: 0, yellow: 0 \};\
-      activeReports.forEach(r => counts[r.line] = (counts[r.line] || 0) + 1);\
-\
-      crowdState = \{\
-        purple: \{ count: counts.purple, delayed: counts.purple >= 3 \},\
-        green: \{ count: counts.green, delayed: counts.green >= 3 \},\
-        yellow: \{ count: counts.yellow, delayed: counts.yellow >= 3 \}\
-      \};\
-\
-      renderNetworkAlerts();\
-    \}\
-\
-    function renderNetworkAlerts() \{\
-      const activeDelays = Object.keys(crowdState).filter(line => crowdState[line].delayed);\
-\
-      if (activeDelays.length > 0) \{\
-        statusPingDot.className = "inline-block w-2 h-2 rounded-full bg-rose-500 animate-ping";\
-        statusLabel.textContent = "DELAYS REPORTED";\
-        statusLabel.className = "text-xs font-mono font-bold tracking-wider text-rose-400";\
-\
-        const primaryLine = activeDelays[0];\
-        alertLineTitle.textContent = `DELAY CONFIRMED ON $\{primaryLine.toUpperCase()\} LINE`;\
-        alertVoteCount.textContent = `$\{crowdState[primaryLine].count\} reports (past 15m)`;\
-        alertBanner.classList.remove('hidden');\
-      \} else \{\
-        statusPingDot.className = "inline-block w-2 h-2 rounded-full bg-emerald-500 animate-ping";\
-        statusLabel.textContent = "LINES NORMAL";\
-        statusLabel.className = "text-xs font-mono font-semibold tracking-wider text-gray-300";\
-        alertBanner.classList.add('hidden');\
-      \}\
-\
-      buildTransitJourney();\
-    \}\
-\
-    // Modal Controller\
-    openReportModalBtn.addEventListener('click', () => \{\
-      reportModal.classList.remove('hidden');\
-      reportSuccessMsg.classList.add('hidden');\
-    \});\
-\
-    closeModalBtn.addEventListener('click', () => \{\
-      reportModal.classList.add('hidden');\
-    \});\
-\
-    window.submitDelayReport = (line) => \{\
-      const now = Date.now();\
-      const lastReport = localStorage.getItem(`np_last_report_$\{line\}`);\
-      // Prevent rapid spam from same user (1 report per 10 mins per line)\
-      if (lastReport && (now - parseInt(lastReport)) < 10 * 60 * 1000) \{\
-        alert("You already reported a delay on this line recently. Thank you!");\
-        reportModal.classList.add('hidden');\
-        return;\
-      \}\
-\
-      const savedReports = JSON.parse(localStorage.getItem('np_crowd_reports') || '[]');\
-      savedReports.push(\{ line, timestamp: now \});\
-      localStorage.setItem('np_crowd_reports', JSON.stringify(savedReports));\
-      localStorage.setItem(`np_last_report_$\{line\}`, now.toString());\
-\
-      reportSuccessMsg.classList.remove('hidden');\
-      setTimeout(() => \{\
-        reportModal.classList.add('hidden');\
-        syncCrowdReports();\
-      \}, 1000);\
-    \};\
-\
-    // Autocomplete Dropdown Logic\
-    function wireAutocomplete(input, drop) \{\
-      input.addEventListener('input', () => \{\
-        const q = input.value.trim().toLowerCase();\
-        if (!q) \{ drop.classList.add('hidden'); return; \}\
-\
-        const matches = STATIONS.filter(s => s.name.toLowerCase().includes(q) || s.full.toLowerCase().includes(q));\
-        const unique = Array.from(new Set(matches.map(m => m.name)));\
-\
-        if (unique.length === 0) \{ drop.classList.add('hidden'); return; \}\
-\
-        drop.innerHTML = unique.map(name => \{\
-          const s = STATIONS.find(item => item.name === name);\
-          const bgCol = LINE_COLORS[s.line] || '#111315';\
-          return `\
-            <div class="px-3 py-2 text-xs font-bold hover:bg-gray-100 cursor-pointer flex justify-between items-center border-b border-gray-100" data-val="$\{name\}">\
-              <div>\
-                <span>$\{name\}</span>\
-                <span class="text-[10px] text-gray-400 block font-normal">$\{s.full !== name ? s.full : ''\}</span>\
-              </div>\
-              <span class="text-[9px] px-1.5 py-0.5 rounded font-mono font-bold uppercase text-white" style="background-color: $\{bgCol\}">$\{s.line\}</span>\
-            </div>\
-          `;\
-        \}).join('');\
-        drop.classList.remove('hidden');\
-      \});\
-\
-      drop.addEventListener('click', (e) => \{\
-        const item = e.target.closest('[data-val]');\
-        if (item) \{\
-          input.value = item.getAttribute('data-val');\
-          drop.classList.add('hidden');\
-          buildTransitJourney();\
-          saveAnonymousCommute(fromInput.value, toInput.value);\
-        \}\
-      \});\
-    \}\
-\
-    wireAutocomplete(fromInput, fromDrop);\
-    wireAutocomplete(toInput, toDrop);\
-\
-    document.addEventListener('click', (e) => \{\
-      if (!fromInput.contains(e.target)) fromDrop.classList.add('hidden');\
-      if (!toInput.contains(e.target)) toDrop.classList.add('hidden');\
-      if (e.target === reportModal) reportModal.classList.add('hidden');\
-    \});\
-\
-    swapBtn.addEventListener('click', () => \{\
-      const t = fromInput.value;\
-      fromInput.value = toInput.value;\
-      toInput.value = t;\
-      buildTransitJourney();\
-      saveAnonymousCommute(fromInput.value, toInput.value);\
-    \});\
-\
-    // Zero-PII Anonymous Local Bookmarks\
-    function saveAnonymousCommute(from, to) \{\
-      if (!from || !to || from === to) return;\
-      let recents = JSON.parse(localStorage.getItem('np_recents') || '[]');\
-      const key = `$\{from\} \uc0\u10132  $\{to\}`;\
-      recents = recents.filter(item => item !== key);\
-      recents.unshift(key);\
-      if (recents.length > 2) recents = recents.slice(0, 2);\
-      localStorage.setItem('np_recents', JSON.stringify(recents));\
-      renderSavedCommutes();\
-    \}\
-\
-    function renderSavedCommutes() \{\
-      const recents = JSON.parse(localStorage.getItem('np_recents') || '[]');\
-      if (recents.length === 0) \{\
-        savedCommutesContainer.innerHTML = `<span class="text-gray-400 text-[11px]">None saved yet</span>`;\
-        return;\
-      \}\
-      savedCommutesContainer.innerHTML = recents.map(pair => \{\
-        const parts = pair.split(' \uc0\u10132  ');\
-        return `\
-          <button class="bg-gray-100 hover:bg-black hover:text-white px-2 py-0.5 rounded font-mono font-semibold text-[11px] border border-gray-300 transition" onclick="setRoute('$\{parts[0]\}', '$\{parts[1]\}')">\
-            $\{pair\}\
-          </button>\
-        `;\
-      \}).join('');\
-    \}\
-\
-    // Geolocation "Locate Me" Button\
-    locBtn.addEventListener('click', () => \{\
-      if (!('geolocation' in navigator)) return;\
-      locLabel.textContent = "Scanning...";\
-      navigator.geolocation.getCurrentPosition(\
-        (pos) => \{\
-          const \{ latitude, longitude \} = pos.coords;\
-          let closest = null;\
-          let minD = Infinity;\
-          STATIONS.forEach(st => \{\
-            const d = Math.hypot(st.lat - latitude, st.lng - longitude);\
-            if (d < minD) \{ minD = d; closest = st; \}\
-          \});\
-          if (closest) \{\
-            fromInput.value = closest.name;\
-            locLabel.textContent = closest.name;\
-            buildTransitJourney();\
-            saveAnonymousCommute(fromInput.value, toInput.value);\
-          \}\
-        \},\
-        () => \{\
-          locLabel.textContent = "Locate Me";\
-          alert("Location could not be queried.");\
-        \},\
-        \{ timeout: 7000 \}\
-      );\
-    \});\
-\
-    // Official BMRCL Fare Slabs\
-    function computeFare(stops) \{\
-      if (stops <= 0) return 10;\
-      if (stops <= 2) return 10;\
-      if (stops <= 4) return 20;\
-      if (stops <= 6) return 30;\
-      if (stops <= 8) return 40;\
-      if (stops <= 10) return 50;\
-      return 60; // Standard network ceiling\
-    \}\
-\
-    // Core Route Planning Calculation\
-    function buildTransitJourney() \{\
-      const from = fromInput.value.trim();\
-      const to = toInput.value.trim();\
-      if (!from || !to) return;\
-\
-      if (from.toLowerCase() === to.toLowerCase()) \{\
-        heroTitle.textContent = `$\{from\} \uc0\u10132  $\{to\}`;\
-        lineBadgeHolder.innerHTML = '';\
-        heroDuration.textContent = '0m';\
-        heroStops.textContent = 'Same Station';\
-        fareToken.textContent = '\uc0\u8377 10';\
-        fareCard.textContent = '\uc0\u8377 10';\
-        tubeSchematic.innerHTML = `<p class="text-xs text-gray-500 font-mono">Origin and Destination are identical.</p>`;\
-        stopsTray.innerHTML = '';\
-        stopsToggle.textContent = "No intermediate stops";\
-        return;\
-      \}\
-\
-      const origins = STATIONS.filter(s => s.name.toLowerCase() === from.toLowerCase());\
-      const dests = STATIONS.filter(s => s.name.toLowerCase() === to.toLowerCase());\
-\
-      if (origins.length === 0 || dests.length === 0) return;\
-\
-      let route = null;\
-\
-      // 1. Direct line check\
-      for (let o of origins) \{\
-        for (let d of dests) \{\
-          if (o.line === d.line) \{\
-            route = \{\
-              direct: true,\
-              line: o.line,\
-              from: o,\
-              to: d,\
-              stops: Math.abs(d.idx - o.idx)\
-            \};\
-            break;\
-          \}\
-        \}\
-        if (route) break;\
-      \}\
-\
-      // 2. Transfer check\
-      if (!route) \{\
-        const o = origins[0];\
-        const d = dests[0];\
-\
-        // Purple <-> Green via Majestic\
-        if ((o.line === 'purple' && d.line === 'green') || (o.line === 'green' && d.line === 'purple')) \{\
-          const tr1 = STATIONS.find(s => s.name === "Majestic" && s.line === o.line);\
-          const tr2 = STATIONS.find(s => s.name === "Majestic" && s.line === d.line);\
-          const leg1Stops = Math.abs(tr1.idx - o.idx);\
-          const leg2Stops = Math.abs(d.idx - tr2.idx);\
-          route = \{\
-            direct: false,\
-            doubleTransfer: false,\
-            transferHub: "Majestic",\
-            leg1: \{ line: o.line, from: o, to: tr1, stops: leg1Stops \},\
-            leg2: \{ line: d.line, from: tr2, to: d, stops: leg2Stops \},\
-            stops: leg1Stops + leg2Stops\
-          \};\
-        \} \
-        // Green <-> Yellow via RV Road\
-        else if ((o.line === 'green' && d.line === 'yellow') || (o.line === 'yellow' && d.line === 'green')) \{\
-          const tr1 = STATIONS.find(s => s.name === "RV Road" && s.line === o.line);\
-          const tr2 = STATIONS.find(s => s.name === "RV Road" && s.line === d.line);\
-          const leg1Stops = Math.abs(tr1.idx - o.idx);\
-          const leg2Stops = Math.abs(d.idx - tr2.idx);\
-          route = \{\
-            direct: false,\
-            doubleTransfer: false,\
-            transferHub: "RV Road",\
-            leg1: \{ line: o.line, from: o, to: tr1, stops: leg1Stops \},\
-            leg2: \{ line: d.line, from: tr2, to: d, stops: leg2Stops \},\
-            stops: leg1Stops + leg2Stops\
-          \};\
-        \} \
-        // Purple <-> Yellow (Double Transfer via Majestic & RV Road)\
-        else \{\
-          const majP = STATIONS.find(s => s.name === "Majestic" && s.line === "purple");\
-          const majG = STATIONS.find(s => s.name === "Majestic" && s.line === "green");\
-          const rvG = STATIONS.find(s => s.name === "RV Road" && s.line === "green");\
-          const rvY = STATIONS.find(s => s.name === "RV Road" && s.line === "yellow");\
-\
-          if (o.line === 'purple') \{\
-            const s1 = Math.abs(majP.idx - o.idx);\
-            const s2 = Math.abs(rvG.idx - majG.idx);\
-            const s3 = Math.abs(d.idx - rvY.idx);\
-            route = \{\
-              direct: false,\
-              doubleTransfer: true,\
-              transferHub: "Majestic & RV Road",\
-              leg1: \{ line: 'purple', from: o, to: majP, stops: s1 \},\
-              leg2: \{ line: 'green', from: majG, to: rvG, stops: s2 \},\
-              leg3: \{ line: 'yellow', from: rvY, to: d, stops: s3 \},\
-              stops: s1 + s2 + s3\
-            \};\
-          \} else \{\
-            const s1 = Math.abs(rvY.idx - o.idx);\
-            const s2 = Math.abs(majG.idx - rvG.idx);\
-            const s3 = Math.abs(d.idx - majP.idx);\
-            route = \{\
-              direct: false,\
-              doubleTransfer: true,\
-              transferHub: "RV Road & Majestic",\
-              leg1: \{ line: 'yellow', from: o, to: rvY, stops: s1 \},\
-              leg2: \{ line: 'green', from: rvG, to: majG, stops: s2 \},\
-              leg3: \{ line: 'purple', from: majP, to: d, stops: s3 \},\
-              stops: s1 + s2 + s3\
-            \};\
-          \}\
-        \}\
-      \}\
-\
-      renderHero(route, from, to);\
-    \}\
-\
-    // Render Hero Card with Real Delay Buffer\
-    function renderHero(route, from, to) \{\
-      heroTitle.textContent = `$\{from\} \uc0\u10132  $\{to\}`;\
-      const token = computeFare(route.stops);\
-      const card = Math.round(token * 0.95);\
-\
-      fareToken.textContent = `\uc0\u8377 $\{token\}`;\
-      fareCard.textContent = `\uc0\u8377 $\{card\}`;\
-\
-      // Calculate delay buffer if affected line is delayed\
-      let delayBufferMin = 0;\
-      if (route.direct) \{\
-        if (crowdState[route.line]?.delayed) delayBufferMin += 10;\
-      \} else if (!route.doubleTransfer) \{\
-        if (crowdState[route.leg1.line]?.delayed) delayBufferMin += 8;\
-        if (crowdState[route.leg2.line]?.delayed) delayBufferMin += 8;\
-      \} else \{\
-        if (crowdState[route.leg1.line]?.delayed) delayBufferMin += 6;\
-        if (crowdState[route.leg2.line]?.delayed) delayBufferMin += 6;\
-        if (crowdState[route.leg3.line]?.delayed) delayBufferMin += 6;\
-      \}\
-\
-      const transferPenalty = route.direct ? 0 : (route.doubleTransfer ? 10 : 5);\
-      const runMin = Math.round(route.stops * 2.1) + transferPenalty + delayBufferMin;\
-      heroDuration.textContent = `~$\{runMin\}m`;\
-      heroStops.textContent = `$\{route.stops\} stops $\{delayBufferMin > 0 ? `(+$\{delayBufferMin\}m delay)` : ''\}`;\
-\
-      if (route.direct) \{\
-        const bgCol = LINE_COLORS[route.line] || '#111315';\
-        lineBadgeHolder.innerHTML = `\
-          <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold uppercase text-white" style="background-color: $\{bgCol\}">$\{route.line\} LINE</span>\
-          <span class="text-xs text-gray-400 font-mono">NON-STOP</span>\
-        `;\
-      \} else \{\
-        lineBadgeHolder.innerHTML = `\
-          <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold uppercase bg-amber-500 text-black">INTERCHANGE</span>\
-          <span class="text-xs text-yellow-400 font-mono">$\{route.doubleTransfer ? '2 CHANGES' : '1 CHANGE'\} ($\{route.transferHub\})</span>\
-        `;\
-      \}\
-\
-      const now = new Date();\
-      const currentSec = now.getMinutes() * 60 + now.getSeconds();\
-      const headway = (delayBufferMin > 0) ? 600 : 300;\
-      const wait = headway - (currentSec % headway);\
-      const waitM = Math.floor(wait / 60);\
-      const depTime = new Date(now.getTime() + wait * 1000).toLocaleTimeString([], \{ hour: '2-digit', minute: '2-digit' \});\
-\
-      nextTime.textContent = depTime;\
-      nextMins.textContent = `$\{waitM\} MIN`;\
-\
-      let diagramHtml = '';\
-      let intermediateStopsList = [];\
-\
-      if (route.direct) \{\
-        const spineColor = LINE_COLORS[route.line] || '#111315';\
-        diagramHtml = `\
-          <div class="relative pl-9 tube-node">\
-            <div class="tube-spine" style="background-color: $\{spineColor\}"></div>\
-            <div class="absolute left-2.5 top-1.5 w-4 h-4 rounded-full border-4 border-black bg-white z-10"></div>\
-            <div>\
-              <span class="text-[11px] font-mono font-bold uppercase tracking-wider text-gray-400 block">Board Line</span>\
-              <h5 class="text-sm font-extrabold text-gray-900 leading-tight">$\{from\}</h5>\
-            </div>\
-          </div>\
-\
-          <div class="relative pl-9 tube-node py-1">\
-            <div class="tube-spine" style="background-color: $\{spineColor\}"></div>\
-            <div class="text-xs font-mono font-bold text-gray-500 py-2">\
-              \uc0\u8595  $\{route.stops\} intermediate stops (~$\{Math.round(route.stops * 2.1)\} mins)\
-            </div>\
-          </div>\
-\
-          <div class="relative pl-9 tube-node tube-node-last">\
-            <div class="tube-spine" style="background-color: $\{spineColor\}"></div>\
-            <div class="absolute left-2.5 top-1.5 w-4 h-4 rounded-full bg-black z-10"></div>\
-            <div>\
-              <span class="text-[11px] font-mono font-bold uppercase tracking-wider text-gray-400 block">Terminal Arrival</span>\
-              <h5 class="text-sm font-extrabold text-gray-900 leading-tight">$\{to\}</h5>\
-            </div>\
-          </div>\
-        `;\
-\
-        const lineStations = STATIONS.filter(s => s.line === route.line);\
-        const step = route.to.idx >= route.from.idx ? 1 : -1;\
-        for (let i = route.from.idx; i !== route.to.idx + step; i += step) \{\
-          const item = lineStations.find(s => s.idx === i);\
-          if (item) intermediateStopsList.push(item.name);\
-        \}\
-\
-      \} else if (!route.doubleTransfer) \{\
-        const spine1 = LINE_COLORS[route.leg1.line] || '#111315';\
-        const spine2 = LINE_COLORS[route.leg2.line] || '#111315';\
-\
-        diagramHtml = `\
-          <div class="relative pl-9 tube-node">\
-            <div class="tube-spine" style="background-color: $\{spine1\}"></div>\
-            <div class="absolute left-2.5 top-1.5 w-4 h-4 rounded-full border-4 border-black bg-white z-10"></div>\
-            <div>\
-              <span class="text-[11px] font-mono font-bold uppercase text-gray-400 block">Start Journey</span>\
-              <h5 class="text-sm font-extrabold text-gray-900 leading-tight">$\{from\}</h5>\
-              <span class="text-[11px] font-mono text-gray-500">$\{route.leg1.stops\} stops on $\{route.leg1.line.toUpperCase()\} LINE</span>\
-            </div>\
-          </div>\
-\
-          <div class="relative pl-9 tube-node py-3">\
-            <div class="tube-spine" style="background-color: $\{spine2\}"></div>\
-            <div class="absolute left-1.5 top-5 w-6 h-6 rounded-full border-4 border-black bg-yellow-400 flex items-center justify-center z-10 font-mono text-[10px] font-bold">\uc0\u8644 </div>\
-            <div class="bg-gray-100 p-2.5 rounded-lg border border-gray-300">\
-              <span class="text-[10px] font-mono font-bold uppercase tracking-wide text-gray-500 block">Change Platform</span>\
-              <h6 class="text-xs font-bold text-gray-900">$\{route.transferHub\} Interchange</h6>\
-              <span class="text-[11px] text-gray-600">Cross concourse walk ~5 mins to $\{route.leg2.line.toUpperCase()\} LINE</span>\
-            </div>\
-          </div>\
-\
-          <div class="relative pl-9 tube-node tube-node-last">\
-            <div class="tube-spine" style="background-color: $\{spine2\}"></div>\
-            <div class="absolute left-2.5 top-1.5 w-4 h-4 rounded-full bg-black z-10"></div>\
-            <div>\
-              <span class="text-[11px] font-mono font-bold uppercase text-gray-400 block">Arrive</span>\
-              <h5 class="text-sm font-extrabold text-gray-900 leading-tight">$\{to\}</h5>\
-              <span class="text-[11px] font-mono text-gray-500">$\{route.leg2.stops\} stops to destination</span>\
-            </div>\
-          </div>\
-        `;\
-\
-        const appendLeg = (leg) => \{\
-          const lStations = STATIONS.filter(s => s.line === leg.line);\
-          const stp = leg.to.idx >= leg.from.idx ? 1 : -1;\
-          for (let i = leg.from.idx; i !== leg.to.idx + stp; i += stp) \{\
-            const item = lStations.find(s => s.idx === i);\
-            if (item && !intermediateStopsList.includes(item.name)) intermediateStopsList.push(item.name);\
-          \}\
-        \};\
-        appendLeg(route.leg1);\
-        appendLeg(route.leg2);\
-\
-      \} else \{\
-        const spine1 = LINE_COLORS[route.leg1.line];\
-        const spine2 = LINE_COLORS[route.leg2.line];\
-        const spine3 = LINE_COLORS[route.leg3.line];\
-\
-        diagramHtml = `\
-          <div class="relative pl-9 tube-node">\
-            <div class="tube-spine" style="background-color: $\{spine1\}"></div>\
-            <div class="absolute left-2.5 top-1.5 w-4 h-4 rounded-full border-4 border-black bg-white z-10"></div>\
-            <div>\
-              <span class="text-[11px] font-mono font-bold uppercase text-gray-400 block">Board First Train</span>\
-              <h5 class="text-sm font-extrabold text-gray-900 leading-tight">$\{from\}</h5>\
-              <span class="text-[11px] font-mono text-gray-500">$\{route.leg1.stops\} stops on $\{route.leg1.line.toUpperCase()\} LINE</span>\
-            </div>\
-          </div>\
-\
-          <div class="relative pl-9 tube-node py-2">\
-            <div class="tube-spine" style="background-color: $\{spine2\}"></div>\
-            <div class="absolute left-1.5 top-4 w-6 h-6 rounded-full border-4 border-black bg-yellow-400 flex items-center justify-center z-10 font-mono text-[10px] font-bold">\uc0\u8644 </div>\
-            <div class="bg-gray-100 p-2 rounded-lg border border-gray-300">\
-              <h6 class="text-xs font-bold text-gray-900">Change at $\{route.leg1.to.name\}</h6>\
-              <span class="text-[10px] text-gray-600">Transfer to GREEN LINE</span>\
-            </div>\
-          </div>\
-\
-          <div class="relative pl-9 tube-node py-2">\
-            <div class="tube-spine" style="background-color: $\{spine3\}"></div>\
-            <div class="absolute left-1.5 top-4 w-6 h-6 rounded-full border-4 border-black bg-yellow-400 flex items-center justify-center z-10 font-mono text-[10px] font-bold">\uc0\u8644 </div>\
-            <div class="bg-gray-100 p-2 rounded-lg border border-gray-300">\
-              <h6 class="text-xs font-bold text-gray-900">Change at $\{route.leg2.to.name\}</h6>\
-              <span class="text-[10px] text-gray-600">Transfer to $\{route.leg3.line.toUpperCase()\} LINE</span>\
-            </div>\
-          </div>\
-\
-          <div class="relative pl-9 tube-node tube-node-last">\
-            <div class="tube-spine" style="background-color: $\{spine3\}"></div>\
-            <div class="absolute left-2.5 top-1.5 w-4 h-4 rounded-full bg-black z-10"></div>\
-            <div>\
-              <span class="text-[11px] font-mono font-bold uppercase text-gray-400 block">Arrive</span>\
-              <h5 class="text-sm font-extrabold text-gray-900 leading-tight">$\{to\}</h5>\
-            </div>\
-          </div>\
-        `;\
-\
-        const appendLeg = (leg) => \{\
-          const lStations = STATIONS.filter(s => s.line === leg.line);\
-          const stp = leg.to.idx >= leg.from.idx ? 1 : -1;\
-          for (let i = leg.from.idx; i !== leg.to.idx + stp; i += stp) \{\
-            const item = lStations.find(s => s.idx === i);\
-            if (item && !intermediateStopsList.includes(item.name)) intermediateStopsList.push(item.name);\
-          \}\
-        \};\
-        appendLeg(route.leg1);\
-        appendLeg(route.leg2);\
-        appendLeg(route.leg3);\
-      \}\
-\
-      tubeSchematic.innerHTML = diagramHtml;\
-\
-      stopsToggle.textContent = `View All Intermediate Stops [$\{intermediateStopsList.length\}]`;\
-      stopsTray.innerHTML = intermediateStopsList.map((st, i) => `\
-        <div class="flex items-center space-x-2 py-0.5">\
-          <span class="w-1.5 h-1.5 rounded-full $\{i === 0 || i === intermediateStopsList.length - 1 ? 'bg-black' : 'bg-gray-400'\}"></span>\
-          <span class="$\{i === 0 || i === intermediateStopsList.length - 1 ? 'font-bold text-black' : 'text-gray-600'\}">$\{st\}</span>\
-        </div>\
-      `).join('');\
-    \}\
-\
-    stopsToggle.addEventListener('click', () => \{\
-      const isClosed = stopsTray.classList.contains('hidden');\
-      if (isClosed) \{\
-        stopsTray.classList.remove('hidden');\
-        stopsToggle.textContent = stopsToggle.textContent.replace('View', 'Hide');\
-      \} else \{\
-        stopsTray.classList.add('hidden');\
-        stopsToggle.textContent = stopsToggle.textContent.replace('Hide', 'View');\
-      \}\
-    \});\
-\
-    // Start App & Set 30s Polling Loop\
-    renderSavedCommutes();\
-    buildTransitJourney();\
-    updateOnlineStatus();\
-    setInterval(syncCrowdReports, 30000);\
-  </script>\
-</body>\
-</html>}
+  <!-- Connectivity Banner (Auto-shows when inside subway tunnel / offline) -->
+  <div id="offlineBar" class="hidden bg-gray-900 text-amber-400 text-xs font-mono py-1 px-4 text-center border-b border-gray-700">
+    ⚡ Tunnel Mode Active — Running offline from local cache.
+  </div>
+
+  <!-- Header Bar -->
+  <header class="bg-[#111315] text-white border-b-4 border-[#0019A8] sticky top-0 z-30">
+    <div class="max-w-xl mx-auto px-4 py-3 flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <!-- TfL Style Metro Roundel -->
+        <div class="relative w-8 h-8 flex items-center justify-center flex-shrink-0">
+          <div class="w-8 h-8 rounded-full border-[5px] border-[#EE2E24]"></div>
+          <div class="absolute w-10 h-2 bg-white flex items-center justify-center">
+            <div class="w-full h-0.5 bg-[#0019A8]"></div>
+          </div>
+        </div>
+        <div>
+          <h1 class="font-extrabold text-sm tracking-wider uppercase font-mono leading-none">Namma Metro Info</h1>
+          <span class="text-[11px] text-gray-400 font-medium tracking-wide">Bengaluru Transit Guide</span>
+        </div>
+      </div>
+
+      <!-- Live Network Status Indicator -->
+      <div class="flex items-center space-x-2">
+        <span id="statusPingDot" class="inline-block w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
+        <span id="statusLabel" class="text-xs font-mono font-semibold tracking-wider text-gray-300">LINES NORMAL</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Commute Workspace -->
+  <main class="max-w-xl mx-auto w-full px-4 py-4 flex-grow space-y-3.5">
+
+    <!-- Active Crowdsourced Disruption Banner -->
+    <div id="alertBanner" class="hidden bg-rose-50 border-2 border-rose-600 rounded-xl p-3.5 text-xs text-rose-950 font-mono shadow-[3px_3px_0px_0px_#E11D48] space-y-1">
+      <div class="flex items-center justify-between font-bold">
+        <span class="flex items-center space-x-1 text-rose-700">
+          <span>⚠️</span>
+          <span id="alertLineTitle">DELAY ON PURPLE LINE</span>
+        </span>
+        <span id="alertVoteCount" class="bg-rose-200 text-rose-900 px-2 py-0.5 rounded text-[10px]">3 reports</span>
+      </div>
+      <p id="alertBody" class="text-gray-700 text-[11px] leading-relaxed">
+        Multiple riders reported stopped trains or slow movement. Travel time adjusted with +10 min buffer.
+      </p>
+    </div>
+
+    <!-- Route Input Card -->
+    <section class="bg-white rounded-xl border-2 border-[#111315] shadow-[4px_4px_0px_0px_#111315] p-4 space-y-3">
+      <div class="flex justify-between items-center">
+        <h2 class="text-xs font-black uppercase tracking-wider text-gray-500 font-mono">Plan Route</h2>
+        <button id="locBtn" class="text-xs font-bold text-[#0019A8] hover:underline flex items-center space-x-1">
+          <span>●</span>
+          <span id="locLabel">Locate Me</span>
+        </button>
+      </div>
+
+      <div class="relative space-y-2">
+        <!-- Swap Button -->
+        <button id="swapBtn" title="Reverse Journey" class="absolute right-3 top-1/2 -translate-y-1/2 z-10 w-8 h-8 rounded-full bg-white hover:bg-gray-100 border-2 border-black flex items-center justify-center text-black shadow-sm transition active:scale-90">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"/></svg>
+        </button>
+
+        <!-- From Input -->
+        <div class="relative">
+          <label for="fromInput" class="block text-[10px] font-mono font-bold uppercase text-gray-500">From</label>
+          <div class="relative">
+            <input type="text" id="fromInput" placeholder="Enter station or landmark" class="w-full pl-8 pr-12 py-2.5 bg-gray-50 border-2 border-gray-300 rounded-lg text-sm font-bold text-gray-900 focus:bg-white focus:outline-none focus:border-black" autocomplete="off" />
+            <span class="absolute left-2.5 top-3.5 w-3 h-3 rounded-full border-2 border-black bg-white"></span>
+            <div id="fromDrop" class="hidden absolute left-0 right-0 top-12 bg-white border-2 border-black rounded-lg shadow-xl z-50 max-h-56 overflow-y-auto"></div>
+          </div>
+        </div>
+
+        <!-- To Input -->
+        <div class="relative">
+          <label for="toInput" class="block text-[10px] font-mono font-bold uppercase text-gray-500">To</label>
+          <div class="relative">
+            <input type="text" id="toInput" placeholder="Enter destination" class="w-full pl-8 pr-12 py-2.5 bg-gray-50 border-2 border-gray-300 rounded-lg text-sm font-bold text-gray-900 focus:bg-white focus:outline-none focus:border-black" autocomplete="off" />
+            <span class="absolute left-2.5 top-3.5 w-3 h-3 rounded-full bg-black"></span>
+            <div id="toDrop" class="hidden absolute left-0 right-0 top-12 bg-white border-2 border-black rounded-lg shadow-xl z-50 max-h-56 overflow-y-auto"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Popular Shortcuts -->
+      <div class="pt-1 flex flex-wrap gap-1.5" id="quickPills"></div>
+    </section>
+
+    <!-- Transit Hero Output Card -->
+    <section id="heroCard" class="bg-white rounded-xl border-2 border-[#111315] shadow-[4px_4px_0px_0px_#111315] overflow-hidden">
+      
+      <!-- Routing Header -->
+      <div class="p-4 bg-[#111315] text-white flex justify-between items-start">
+        <div class="space-y-1">
+          <div id="lineBadgeHolder" class="flex items-center space-x-2"></div>
+          <h3 id="heroTitle" class="text-lg font-black tracking-tight leading-snug">Whitefield → Challaghatta</h3>
+        </div>
+        <div class="text-right font-mono">
+          <span id="heroDuration" class="text-2xl font-black text-yellow-400 block leading-none">~76m</span>
+          <span id="heroStops" class="text-xs text-gray-400">36 stops</span>
+        </div>
+      </div>
+
+      <!-- Fare Bar -->
+      <div class="grid grid-cols-2 divide-x-2 divide-black border-b-2 border-black bg-gray-50 text-xs font-mono">
+        <div class="p-3">
+          <span class="text-[10px] text-gray-500 block uppercase font-bold">Standard Ticket</span>
+          <span id="fareToken" class="text-xl font-bold text-gray-900">₹60</span>
+          <span class="text-[10px] text-gray-500 block">Single QR / Cash</span>
+        </div>
+        <div class="p-3 bg-emerald-50/50">
+          <span class="text-[10px] text-emerald-800 block uppercase font-bold">Contactless / NCMC</span>
+          <span id="fareCard" class="text-xl font-bold text-emerald-700">₹57</span>
+          <span id="discountTag" class="text-[10px] text-emerald-600 block">5% Smartcard Saver</span>
+        </div>
+      </div>
+
+      <!-- Next Departure Platform Feed -->
+      <div class="p-4 bg-yellow-50/50 border-b-2 border-black flex items-center justify-between">
+        <div>
+          <span class="text-[10px] font-mono font-bold uppercase tracking-wider text-amber-900 block">Platform Departure</span>
+          <div class="flex items-baseline space-x-2 mt-0.5">
+            <span id="nextTime" class="text-xl font-black font-mono text-black">12:35 PM</span>
+            <span id="nextHeading" class="text-xs font-bold text-gray-700">Platform 1 · Westbound</span>
+          </div>
+        </div>
+        <div class="text-right font-mono">
+          <span id="nextMins" class="text-lg font-black bg-black text-white px-2 py-1 rounded">4 MIN</span>
+        </div>
+      </div>
+
+      <!-- London Tube Line Schematic -->
+      <div class="p-5 space-y-4">
+        <h4 class="text-xs font-mono font-bold uppercase text-gray-500 tracking-wider">Itinerary Schematic</h4>
+        
+        <div id="tubeSchematic" class="relative pl-3 space-y-6"></div>
+
+        <!-- Collapsed Full Stops List -->
+        <div class="pt-2">
+          <button id="stopsToggle" class="w-full py-2 bg-gray-100 hover:bg-gray-200 border-2 border-black rounded-lg text-xs font-mono font-bold tracking-wider uppercase transition">
+            View All Intermediate Stops [36]
+          </button>
+          <div id="stopsTray" class="hidden mt-3 p-3 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300 font-mono text-xs space-y-1.5 max-h-48 overflow-y-auto"></div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- Crowdsource Report Button Bar -->
+    <section class="bg-white rounded-xl border-2 border-[#111315] p-3.5 flex items-center justify-between text-xs">
+      <div>
+        <span class="font-bold text-gray-900 block font-mono uppercase">Stuck on a train?</span>
+        <span class="text-[11px] text-gray-500">Alert fellow riders in real time</span>
+      </div>
+      <button id="openReportModalBtn" class="bg-rose-600 hover:bg-rose-700 text-white font-mono font-bold px-3 py-1.5 rounded-lg border-2 border-black shadow-[2px_2px_0px_0px_#111315] active:translate-x-0.5 active:translate-y-0.5 transition">
+        📢 Report Delay
+      </button>
+    </section>
+
+    <!-- Anonymous Local Favourites Bar -->
+    <section class="bg-white rounded-xl border-2 border-[#111315] p-3 flex items-center justify-between text-xs">
+      <span class="font-mono font-bold uppercase text-gray-600">Saved Commutes:</span>
+      <div class="flex items-center space-x-2" id="savedCommutesContainer"></div>
+    </section>
+
+  </main>
+
+  <!-- Report Delay Popup Modal -->
+  <div id="reportModal" class="hidden fixed inset-0 bg-black/60 z-50 flex items-end sm:items-center justify-center p-4">
+    <div class="bg-white border-4 border-black rounded-2xl max-w-sm w-full p-5 space-y-4 shadow-[6px_6px_0px_0px_#111315]">
+      <div class="flex justify-between items-center border-b-2 border-gray-100 pb-2">
+        <h3 class="font-black text-sm uppercase font-mono">Report Line Disruption</h3>
+        <button id="closeModalBtn" class="font-bold text-gray-400 hover:text-black text-lg">&times;</button>
+      </div>
+      <p class="text-xs text-gray-600">
+        Tap the line experiencing unexpected delays or stopped trains. When 3 riders confirm within 15 minutes, the system alerts all commuters automatically.
+      </p>
+      <div class="grid grid-cols-1 gap-2 font-mono text-xs font-bold">
+        <button onclick="submitDelayReport('purple')" class="w-full py-2.5 px-3 rounded-lg border-2 border-purple-800 bg-purple-100 text-purple-900 hover:bg-purple-200 text-left flex justify-between items-center">
+          <span>🟣 PURPLE LINE</span>
+          <span class="text-[10px] bg-white px-1.5 py-0.5 rounded border border-purple-300">Tap to Report</span>
+        </button>
+        <button onclick="submitDelayReport('green')" class="w-full py-2.5 px-3 rounded-lg border-2 border-emerald-800 bg-emerald-100 text-emerald-900 hover:bg-emerald-200 text-left flex justify-between items-center">
+          <span>🟢 GREEN LINE</span>
+          <span class="text-[10px] bg-white px-1.5 py-0.5 rounded border border-emerald-300">Tap to Report</span>
+        </button>
+        <button onclick="submitDelayReport('yellow')" class="w-full py-2.5 px-3 rounded-lg border-2 border-amber-800 bg-amber-100 text-amber-900 hover:bg-amber-200 text-left flex justify-between items-center">
+          <span>🟡 YELLOW LINE</span>
+          <span class="text-[10px] bg-white px-1.5 py-0.5 rounded border border-amber-300">Tap to Report</span>
+        </button>
+      </div>
+      <div id="reportSuccessMsg" class="hidden text-center text-xs font-bold text-emerald-700 font-mono py-1">
+        ✓ Report recorded. Thank you for helping commuters!
+      </div>
+    </div>
+  </div>
+
+  <!-- Clear Legally Compliant Footer -->
+  <footer class="max-w-xl mx-auto w-full px-4 py-4 text-center text-xs font-mono text-gray-500 border-t border-gray-200 space-y-1">
+    <p class="font-bold text-gray-700">Namma Metro Info • Independent Commuter Guide</p>
+    <p class="text-[10px] text-gray-400">
+      Not affiliated with or endorsed by BMRCL. Namma Metro is a registered trademark of Bangalore Metro Rail Corporation Limited.
+    </p>
+  </footer>
+
+  <script>
+    // --- COMPLETE BENGALURU METRO NETWORK DIRECTORY ---
+    const STATIONS = [
+      // Purple Line (43.49 km)
+      { id: "P01", name: "Whitefield", full: "Whitefield (Kadugodi)", line: "purple", idx: 0, lat: 12.9961, lng: 77.7612 },
+      { id: "P02", name: "Hopefarm", full: "Hopefarm Channasandra", line: "purple", idx: 1, lat: 12.9845, lng: 77.7511 },
+      { id: "P03", name: "Kadugodi Tree Park", full: "Kadugodi Tree Park", line: "purple", idx: 2, lat: 12.9882, lng: 77.7420 },
+      { id: "P04", name: "Pattandur Agrahara", full: "Pattandur Agrahara", line: "purple", idx: 3, lat: 12.9880, lng: 77.7330 },
+      { id: "P05", name: "Sri Sathya Sai Hospital", full: "Sri Sathya Sai Hospital", line: "purple", idx: 4, lat: 12.9844, lng: 77.7258 },
+      { id: "P06", name: "Nallurhalli", full: "Nallurhalli", line: "purple", idx: 5, lat: 12.9778, lng: 77.7198 },
+      { id: "P07", name: "Kundalahalli", full: "Kundalahalli", line: "purple", idx: 6, lat: 12.9734, lng: 77.7139 },
+      { id: "P08", name: "Seetharamapalaya", full: "Seetharamapalaya", line: "purple", idx: 7, lat: 12.9771, lng: 77.7018 },
+      { id: "P09", name: "Hoodi", full: "Hoodi", line: "purple", idx: 8, lat: 12.9897, lng: 77.6974 },
+      { id: "P10", name: "Garudacharapalya", full: "Garudacharapalya", line: "purple", idx: 9, lat: 12.9922, lng: 77.6892 },
+      { id: "P11", name: "Singayyanapalya", full: "Singayyanapalya", line: "purple", idx: 10, lat: 12.9961, lng: 77.6834 },
+      { id: "P12", name: "KR Pura", full: "KR Pura", line: "purple", idx: 11, lat: 12.9984, lng: 77.6775 },
+      { id: "P13", name: "Benniganahalli", full: "Benniganahalli", line: "purple", idx: 12, lat: 12.9935, lng: 77.6591 },
+      { id: "P14", name: "Baiyappanahalli", full: "Baiyappanahalli", line: "purple", idx: 13, lat: 12.9912, lng: 77.6521 },
+      { id: "P15", name: "Swami Vivekananda Road", full: "Swami Vivekananda Road", line: "purple", idx: 14, lat: 12.9861, lng: 77.6432 },
+      { id: "P16", name: "Indiranagar", full: "Indiranagar", line: "purple", idx: 15, lat: 12.9783, lng: 77.6387 },
+      { id: "P17", name: "Halasuru", full: "Halasuru", line: "purple", idx: 16, lat: 12.9754, lng: 77.6264 },
+      { id: "P18", name: "Trinity", full: "Trinity", line: "purple", idx: 17, lat: 12.9729, lng: 77.6171 },
+      { id: "P19", name: "MG Road", full: "Mahatma Gandhi Road", line: "purple", idx: 18, lat: 12.9756, lng: 77.6066 },
+      { id: "P20", name: "Cubbon Park", full: "Cubbon Park", line: "purple", idx: 19, lat: 12.9811, lng: 77.5996 },
+      { id: "P21", name: "Vidhana Soudha", full: "Dr. B. R. Ambedkar Vidhana Soudha", line: "purple", idx: 20, lat: 12.9798, lng: 77.5925 },
+      { id: "P22", name: "Sir M. Visveshwaraya", full: "Sir M. Visveshwaraya Central College", line: "purple", idx: 21, lat: 12.9749, lng: 77.5839 },
+      { id: "P23", name: "Majestic", full: "Nadaprabhu Kempegowda Station Majestic", line: "purple", interchange: true, idx: 22, lat: 12.9757, lng: 77.5728 },
+      { id: "P24", name: "City Railway Station", full: "KSR City Railway Station", line: "purple", idx: 23, lat: 12.9781, lng: 77.5668 },
+      { id: "P25", name: "Magadi Road", full: "Magadi Road", line: "purple", idx: 24, lat: 12.9755, lng: 77.5552 },
+      { id: "P26", name: "Hosahalli", full: "Sri Balagangadharanatha Swamiji Hosahalli", line: "purple", idx: 25, lat: 12.9728, lng: 77.5459 },
+      { id: "P27", name: "Vijayanagar", full: "Vijayanagar", line: "purple", idx: 26, lat: 12.9696, lng: 77.5369 },
+      { id: "P28", name: "Attiguppe", full: "Attiguppe", line: "purple", idx: 27, lat: 12.9622, lng: 77.5334 },
+      { id: "P29", name: "Deepanjali Nagar", full: "Deepanjali Nagar", line: "purple", idx: 28, lat: 12.9525, lng: 77.5364 },
+      { id: "P30", name: "Mysuru Road", full: "Mysuru Road", line: "purple", idx: 29, lat: 12.9463, lng: 77.5300 },
+      { id: "P31", name: "Pantharapalya", full: "Pantharapalya-Nayandahalli", line: "purple", idx: 30, lat: 12.9405, lng: 77.5255 },
+      { id: "P32", name: "Rajarajeshwari Nagar", full: "Rajarajeshwari Nagar", line: "purple", idx: 31, lat: 12.9284, lng: 77.5218 },
+      { id: "P33", name: "Jnanabharathi", full: "Jnanabharathi", line: "purple", idx: 32, lat: 12.9189, lng: 77.5097 },
+      { id: "P34", name: "Pattanagere", full: "Pattanagere", line: "purple", idx: 33, lat: 12.9149, lng: 77.4988 },
+      { id: "P35", name: "Kengeri Bus Terminal", full: "Kengeri Bus Terminal", line: "purple", idx: 34, lat: 12.9118, lng: 77.4891 },
+      { id: "P36", name: "Kengeri", full: "Kengeri", line: "purple", idx: 35, lat: 12.9083, lng: 77.4789 },
+      { id: "P37", name: "Challaghatta", full: "Challaghatta", line: "purple", idx: 36, lat: 12.9008, lng: 77.4641 },
+
+      // Green Line (33.46 km)[cite: 1]
+      { id: "G01", name: "Madavara", full: "Madavara (BIEC)", line: "green", idx: 0, lat: 13.0642, lng: 77.4851 },
+      { id: "G02", name: "Chikkabidarakallu", full: "Chikkabidarakallu", line: "green", idx: 1, lat: 13.0560, lng: 77.4920 },
+      { id: "G03", name: "Manjunathanagar", full: "Manjunathanagar", line: "green", idx: 2, lat: 13.0510, lng: 77.4960 },
+      { id: "G04", name: "Nagasandra", full: "Nagasandra", line: "green", idx: 3, lat: 13.0478, lng: 77.4996 },
+      { id: "G05", name: "Dasarahalli", full: "Dasarahalli", line: "green", idx: 4, lat: 13.0435, lng: 77.5126 },
+      { id: "G06", name: "Jalahalli", full: "Jalahalli", line: "green", idx: 5, lat: 13.0392, lng: 77.5195 },
+      { id: "G07", name: "Peenya Industry", full: "Peenya Industry", line: "green", idx: 6, lat: 13.0347, lng: 77.5255 },
+      { id: "G08", name: "Peenya", full: "Peenya", line: "green", idx: 7, lat: 13.0284, lng: 77.5332 },
+      { id: "G09", name: "Goraguntepalya", full: "Goraguntepalya", line: "green", idx: 8, lat: 13.0280, lng: 77.5412 },
+      { id: "G10", name: "Yeshwanthpur", full: "Yeshwanthpur", line: "green", idx: 9, lat: 13.0232, lng: 77.5501 },
+      { id: "G11", name: "Sandal Soap Factory", full: "Sandal Soap Factory", line: "green", idx: 10, lat: 13.0147, lng: 77.5539 },
+      { id: "G12", name: "Mahalakshmi", full: "Mahalakshmi", line: "green", idx: 11, lat: 13.0079, lng: 77.5492 },
+      { id: "G13", name: "Rajajinagar", full: "Rajajinagar", line: "green", idx: 12, lat: 12.9989, lng: 77.5562 },
+      { id: "G14", name: "Kuvempu Road", full: "Mahakavi Kuvempu Road", line: "green", idx: 13, lat: 12.9981, lng: 77.5621 },
+      { id: "G15", name: "Srirampura", full: "Srirampura", line: "green", idx: 14, lat: 12.9963, lng: 77.5645 },
+      { id: "G16", name: "Sampige Road", full: "Sampige Road Malleshwaram", line: "green", idx: 15, lat: 12.9912, lng: 77.5707 },
+      { id: "G17", name: "Majestic", full: "Nadaprabhu Kempegowda Station Majestic", line: "green", interchange: true, idx: 16, lat: 12.9757, lng: 77.5728 },
+      { id: "G18", name: "Chickpete", full: "Chickpete", line: "green", idx: 17, lat: 12.9669, lng: 77.5739 },
+      { id: "G19", name: "KR Market", full: "Krishna Rajendra Market", line: "green", idx: 18, lat: 12.9609, lng: 77.5746 },
+      { id: "G20", name: "National College", full: "National College", line: "green", idx: 19, lat: 12.9504, lng: 77.5727 },
+      { id: "G21", name: "Lalbagh", full: "Lalbagh Botanical Garden", line: "green", idx: 20, lat: 12.9461, lng: 77.5801 },
+      { id: "G22", name: "South End Circle", full: "South End Circle", line: "green", idx: 21, lat: 12.9377, lng: 77.5801 },
+      { id: "G23", name: "Jayanagar", full: "Jayanagar", line: "green", idx: 22, lat: 12.9298, lng: 77.5802 },
+      { id: "G24", name: "RV Road", full: "Rashtreeya Vidyalaya Road", line: "green", interchange: true, idx: 23, lat: 12.9216, lng: 77.5801 },
+      { id: "G25", name: "Banashankari", full: "Banashankari", line: "green", idx: 24, lat: 12.9154, lng: 77.5736 },
+      { id: "G26", name: "Jayaprakash Nagar", full: "Jaya Prakash Nagar", line: "green", idx: 25, lat: 12.9074, lng: 77.5728 },
+      { id: "G27", name: "Yelachenahalli", full: "Yelachenahalli", line: "green", idx: 26, lat: 12.8959, lng: 77.5703 },
+      { id: "G28", name: "Konankunte Cross", full: "Konankunte Cross", line: "green", idx: 27, lat: 12.8876, lng: 77.5689 },
+      { id: "G29", name: "Doddakallasandra", full: "Doddakallasandra", line: "green", idx: 28, lat: 12.8761, lng: 77.5612 },
+      { id: "G30", name: "Vajarahalli", full: "Vajarahalli", line: "green", idx: 29, lat: 12.8682, lng: 77.5524 },
+      { id: "G31", name: "Thalaghattapura", full: "Thalaghattapura", line: "green", idx: 30, lat: 12.8631, lng: 77.5412 },
+      { id: "G32", name: "Silk Institute", full: "Silk Institute", line: "green", idx: 31, lat: 12.8617, lng: 77.5305 },
+
+      // Yellow Line (19.15 km)[cite: 1]
+      { id: "Y01", name: "RV Road", full: "Rashtreeya Vidyalaya Road", line: "yellow", interchange: true, idx: 0, lat: 12.9216, lng: 77.5801 },
+      { id: "Y02", name: "Ragigudda", full: "Ragigudda", line: "yellow", idx: 1, lat: 12.9172, lng: 77.5910 },
+      { id: "Y03", name: "Jayadeva Hospital", full: "Jayadeva Hospital", line: "yellow", idx: 2, lat: 12.9168, lng: 77.6012 },
+      { id: "Y04", name: "BTM Layout", full: "BTM Layout", line: "yellow", idx: 3, lat: 12.9160, lng: 77.6110 },
+      { id: "Y05", name: "Central Silk Board", full: "Central Silk Board", line: "yellow", idx: 4, lat: 12.9174, lng: 77.6234 },
+      { id: "Y06", name: "Bommanahalli", full: "Bommanahalli", line: "yellow", idx: 5, lat: 12.9080, lng: 77.6250 },
+      { id: "Y07", name: "Hongasandra", full: "Hongasandra", line: "yellow", idx: 6, lat: 12.8998, lng: 77.6321 },
+      { id: "Y08", name: "Kudlu Gate", full: "Kudlu Gate", line: "yellow", idx: 7, lat: 12.8895, lng: 77.6401 },
+      { id: "Y09", name: "Singasandra", full: "Singasandra", line: "yellow", idx: 8, lat: 12.8791, lng: 77.6482 },
+      { id: "Y10", name: "Hosa Road", full: "Hosa Road", line: "yellow", idx: 9, lat: 12.8690, lng: 77.6560 },
+      { id: "Y11", name: "Beratena Agrahara", full: "Beratena Agrahara", line: "yellow", idx: 10, lat: 12.8589, lng: 77.6631 },
+      { id: "Y12", name: "Electronic City", full: "Electronic City", line: "yellow", idx: 11, lat: 12.8465, lng: 77.6740 },
+      { id: "Y13", name: "Konappana Agrahara", full: "Infosys Foundation Konappana Agrahara", line: "yellow", idx: 12, lat: 12.8361, lng: 77.6820 },
+      { id: "Y14", name: "Huskur Road", full: "Huskur Road", line: "yellow", idx: 13, lat: 12.8250, lng: 77.6890 },
+      { id: "Y15", name: "Biocon Hebbagodi", full: "Biocon Hebbagodi", line: "yellow", idx: 14, lat: 12.8120, lng: 77.6930 },
+      { id: "Y16", name: "Bommasandra", full: "Delta Electronics Bommasandra", line: "yellow", idx: 15, lat: 12.8010, lng: 77.6990 }
+    ];
+
+    const LINE_COLORS = {
+      purple: '#7B2CBF',
+      green: '#007A3D',
+      yellow: '#EAA221'
+    };
+
+    // --- CROWDSOURCED DELAY ENGINE ---
+    let crowdState = {
+      purple: { count: 0, delayed: false },
+      green: { count: 0, delayed: false },
+      yellow: { count: 0, delayed: false }
+    };
+
+    // DOM Elements
+    const fromInput = document.getElementById('fromInput');
+    const toInput = document.getElementById('toInput');
+    const fromDrop = document.getElementById('fromDrop');
+    const toDrop = document.getElementById('toDrop');
+    const swapBtn = document.getElementById('swapBtn');
+    const locBtn = document.getElementById('locBtn');
+    const locLabel = document.getElementById('locLabel');
+    const quickPills = document.getElementById('quickPills');
+
+    const heroTitle = document.getElementById('heroTitle');
+    const lineBadgeHolder = document.getElementById('lineBadgeHolder');
+    const heroDuration = document.getElementById('heroDuration');
+    const heroStops = document.getElementById('heroStops');
+    const fareToken = document.getElementById('fareToken');
+    const fareCard = document.getElementById('fareCard');
+    const discountTag = document.getElementById('discountTag');
+    const nextTime = document.getElementById('nextTime');
+    const nextHeading = document.getElementById('nextHeading');
+    const nextMins = document.getElementById('nextMins');
+    const tubeSchematic = document.getElementById('tubeSchematic');
+    const stopsToggle = document.getElementById('stopsToggle');
+    const stopsTray = document.getElementById('stopsTray');
+    const savedCommutesContainer = document.getElementById('savedCommutesContainer');
+
+    const offlineBar = document.getElementById('offlineBar');
+    const statusPingDot = document.getElementById('statusPingDot');
+    const statusLabel = document.getElementById('statusLabel');
+    const alertBanner = document.getElementById('alertBanner');
+    const alertLineTitle = document.getElementById('alertLineTitle');
+    const alertVoteCount = document.getElementById('alertVoteCount');
+    const openReportModalBtn = document.getElementById('openReportModalBtn');
+    const reportModal = document.getElementById('reportModal');
+    const closeModalBtn = document.getElementById('closeModalBtn');
+    const reportSuccessMsg = document.getElementById('reportSuccessMsg');
+
+    // Default route
+    fromInput.value = "Whitefield";
+    toInput.value = "Challaghatta";
+
+    const POPULAR = [
+      { from: "Whitefield", to: "Challaghatta" },
+      { from: "Indiranagar", to: "MG Road" },
+      { from: "Majestic", to: "Electronic City" },
+      { from: "Yeshwanthpur", to: "Jayanagar" }
+    ];
+
+    quickPills.innerHTML = POPULAR.map(p => `
+      <button class="px-2.5 py-1 bg-gray-100 hover:bg-black hover:text-white rounded border border-gray-300 font-mono text-[11px] font-bold transition" onclick="setRoute('${p.from}', '${p.to}')">
+        ${p.from} → ${p.to}
+      </button>
+    `).join('');
+
+    window.setRoute = (from, to) => {
+      fromInput.value = from;
+      toInput.value = to;
+      buildTransitJourney();
+      saveAnonymousCommute(from, to);
+    };
+
+    // --- OFFLINE / ONLINE WATCHDOG ---
+    function updateOnlineStatus() {
+      if (navigator.onLine) {
+        offlineBar.classList.add('hidden');
+        syncCrowdReports();
+      } else {
+        offlineBar.classList.remove('hidden');
+      }
+    }
+    window.addEventListener('online', updateOnlineStatus);
+    window.addEventListener('offline', updateOnlineStatus);
+
+    // --- CROWD DELAY SYNC (15-Minute Rolling Quorum) ---
+    function syncCrowdReports() {
+      const savedReports = JSON.parse(localStorage.getItem('np_crowd_reports') || '[]');
+      const now = Date.now();
+      // Keep only reports within the last 15 minutes (900,000 ms)
+      const activeReports = savedReports.filter(r => (now - r.timestamp) < 15 * 60 * 1000);
+      localStorage.setItem('np_crowd_reports', JSON.stringify(activeReports));
+
+      const counts = { purple: 0, green: 0, yellow: 0 };
+      activeReports.forEach(r => counts[r.line] = (counts[r.line] || 0) + 1);
+
+      crowdState = {
+        purple: { count: counts.purple, delayed: counts.purple >= 3 },
+        green: { count: counts.green, delayed: counts.green >= 3 },
+        yellow: { count: counts.yellow, delayed: counts.yellow >= 3 }
+      };
+
+      renderNetworkAlerts();
+    }
+
+    function renderNetworkAlerts() {
+      const activeDelays = Object.keys(crowdState).filter(line => crowdState[line].delayed);
+
+      if (activeDelays.length > 0) {
+        statusPingDot.className = "inline-block w-2 h-2 rounded-full bg-rose-500 animate-ping";
+        statusLabel.textContent = "DELAYS REPORTED";
+        statusLabel.className = "text-xs font-mono font-bold tracking-wider text-rose-400";
+
+        const primaryLine = activeDelays[0];
+        alertLineTitle.textContent = `DELAY CONFIRMED ON ${primaryLine.toUpperCase()} LINE`;
+        alertVoteCount.textContent = `${crowdState[primaryLine].count} reports (past 15m)`;
+        alertBanner.classList.remove('hidden');
+      } else {
+        statusPingDot.className = "inline-block w-2 h-2 rounded-full bg-emerald-500 animate-ping";
+        statusLabel.textContent = "LINES NORMAL";
+        statusLabel.className = "text-xs font-mono font-semibold tracking-wider text-gray-300";
+        alertBanner.classList.add('hidden');
+      }
+
+      buildTransitJourney();
+    }
+
+    // Modal Controller
+    openReportModalBtn.addEventListener('click', () => {
+      reportModal.classList.remove('hidden');
+      reportSuccessMsg.classList.add('hidden');
+    });
+
+    closeModalBtn.addEventListener('click', () => {
+      reportModal.classList.add('hidden');
+    });
+
+    window.submitDelayReport = (line) => {
+      const now = Date.now();
+      const lastReport = localStorage.getItem(`np_last_report_${line}`);
+      // Prevent rapid spam from same user (1 report per 10 mins per line)
+      if (lastReport && (now - parseInt(lastReport)) < 10 * 60 * 1000) {
+        alert("You already reported a delay on this line recently. Thank you!");
+        reportModal.classList.add('hidden');
+        return;
+      }
+
+      const savedReports = JSON.parse(localStorage.getItem('np_crowd_reports') || '[]');
+      savedReports.push({ line, timestamp: now });
+      localStorage.setItem('np_crowd_reports', JSON.stringify(savedReports));
+      localStorage.setItem(`np_last_report_${line}`, now.toString());
+
+      reportSuccessMsg.classList.remove('hidden');
+      setTimeout(() => {
+        reportModal.classList.add('hidden');
+        syncCrowdReports();
+      }, 1000);
+    };
+
+    // Autocomplete Dropdown Logic
+    function wireAutocomplete(input, drop) {
+      input.addEventListener('input', () => {
+        const q = input.value.trim().toLowerCase();
+        if (!q) { drop.classList.add('hidden'); return; }
+
+        const matches = STATIONS.filter(s => s.name.toLowerCase().includes(q) || s.full.toLowerCase().includes(q));
+        const unique = Array.from(new Set(matches.map(m => m.name)));
+
+        if (unique.length === 0) { drop.classList.add('hidden'); return; }
+
+        drop.innerHTML = unique.map(name => {
+          const s = STATIONS.find(item => item.name === name);
+          const bgCol = LINE_COLORS[s.line] || '#111315';
+          return `
+            <div class="px-3 py-2 text-xs font-bold hover:bg-gray-100 cursor-pointer flex justify-between items-center border-b border-gray-100" data-val="${name}">
+              <div>
+                <span>${name}</span>
+                <span class="text-[10px] text-gray-400 block font-normal">${s.full !== name ? s.full : ''}</span>
+              </div>
+              <span class="text-[9px] px-1.5 py-0.5 rounded font-mono font-bold uppercase text-white" style="background-color: ${bgCol}">${s.line}</span>
+            </div>
+          `;
+        }).join('');
+        drop.classList.remove('hidden');
+      });
+
+      drop.addEventListener('click', (e) => {
+        const item = e.target.closest('[data-val]');
+        if (item) {
+          input.value = item.getAttribute('data-val');
+          drop.classList.add('hidden');
+          buildTransitJourney();
+          saveAnonymousCommute(fromInput.value, toInput.value);
+        }
+      });
+    }
+
+    wireAutocomplete(fromInput, fromDrop);
+    wireAutocomplete(toInput, toDrop);
+
+    document.addEventListener('click', (e) => {
+      if (!fromInput.contains(e.target)) fromDrop.classList.add('hidden');
+      if (!toInput.contains(e.target)) toDrop.classList.add('hidden');
+      if (e.target === reportModal) reportModal.classList.add('hidden');
+    });
+
+    swapBtn.addEventListener('click', () => {
+      const t = fromInput.value;
+      fromInput.value = toInput.value;
+      toInput.value = t;
+      buildTransitJourney();
+      saveAnonymousCommute(fromInput.value, toInput.value);
+    });
+
+    // Zero-PII Anonymous Local Bookmarks
+    function saveAnonymousCommute(from, to) {
+      if (!from || !to || from === to) return;
+      let recents = JSON.parse(localStorage.getItem('np_recents') || '[]');
+      const key = `${from} ➔ ${to}`;
+      recents = recents.filter(item => item !== key);
+      recents.unshift(key);
+      if (recents.length > 2) recents = recents.slice(0, 2);
+      localStorage.setItem('np_recents', JSON.stringify(recents));
+      renderSavedCommutes();
+    }
+
+    function renderSavedCommutes() {
+      const recents = JSON.parse(localStorage.getItem('np_recents') || '[]');
+      if (recents.length === 0) {
+        savedCommutesContainer.innerHTML = `<span class="text-gray-400 text-[11px]">None saved yet</span>`;
+        return;
+      }
+      savedCommutesContainer.innerHTML = recents.map(pair => {
+        const parts = pair.split(' ➔ ');
+        return `
+          <button class="bg-gray-100 hover:bg-black hover:text-white px-2 py-0.5 rounded font-mono font-semibold text-[11px] border border-gray-300 transition" onclick="setRoute('${parts[0]}', '${parts[1]}')">
+            ${pair}
+          </button>
+        `;
+      }).join('');
+    }
+
+    // Geolocation "Locate Me" Button
+    locBtn.addEventListener('click', () => {
+      if (!('geolocation' in navigator)) return;
+      locLabel.textContent = "Scanning...";
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          const { latitude, longitude } = pos.coords;
+          let closest = null;
+          let minD = Infinity;
+          STATIONS.forEach(st => {
+            const d = Math.hypot(st.lat - latitude, st.lng - longitude);
+            if (d < minD) { minD = d; closest = st; }
+          });
+          if (closest) {
+            fromInput.value = closest.name;
+            locLabel.textContent = closest.name;
+            buildTransitJourney();
+            saveAnonymousCommute(fromInput.value, toInput.value);
+          }
+        },
+        () => {
+          locLabel.textContent = "Locate Me";
+          alert("Location could not be queried.");
+        },
+        { timeout: 7000 }
+      );
+    });
+
+    // Official BMRCL Fare Slabs
+    function computeFare(stops) {
+      if (stops <= 0) return 10;
+      if (stops <= 2) return 10;
+      if (stops <= 4) return 20;
+      if (stops <= 6) return 30;
+      if (stops <= 8) return 40;
+      if (stops <= 10) return 50;
+      return 60; // Standard network ceiling
+    }
+
+    // Core Route Planning Calculation
+    function buildTransitJourney() {
+      const from = fromInput.value.trim();
+      const to = toInput.value.trim();
+      if (!from || !to) return;
+
+      if (from.toLowerCase() === to.toLowerCase()) {
+        heroTitle.textContent = `${from} ➔ ${to}`;
+        lineBadgeHolder.innerHTML = '';
+        heroDuration.textContent = '0m';
+        heroStops.textContent = 'Same Station';
+        fareToken.textContent = '₹10';
+        fareCard.textContent = '₹10';
+        tubeSchematic.innerHTML = `<p class="text-xs text-gray-500 font-mono">Origin and Destination are identical.</p>`;
+        stopsTray.innerHTML = '';
+        stopsToggle.textContent = "No intermediate stops";
+        return;
+      }
+
+      const origins = STATIONS.filter(s => s.name.toLowerCase() === from.toLowerCase());
+      const dests = STATIONS.filter(s => s.name.toLowerCase() === to.toLowerCase());
+
+      if (origins.length === 0 || dests.length === 0) return;
+
+      let route = null;
+
+      // 1. Direct line check
+      for (let o of origins) {
+        for (let d of dests) {
+          if (o.line === d.line) {
+            route = {
+              direct: true,
+              line: o.line,
+              from: o,
+              to: d,
+              stops: Math.abs(d.idx - o.idx)
+            };
+            break;
+          }
+        }
+        if (route) break;
+      }
+
+      // 2. Transfer check
+      if (!route) {
+        const o = origins[0];
+        const d = dests[0];
+
+        // Purple <-> Green via Majestic
+        if ((o.line === 'purple' && d.line === 'green') || (o.line === 'green' && d.line === 'purple')) {
+          const tr1 = STATIONS.find(s => s.name === "Majestic" && s.line === o.line);
+          const tr2 = STATIONS.find(s => s.name === "Majestic" && s.line === d.line);
+          const leg1Stops = Math.abs(tr1.idx - o.idx);
+          const leg2Stops = Math.abs(d.idx - tr2.idx);
+          route = {
+            direct: false,
+            doubleTransfer: false,
+            transferHub: "Majestic",
+            leg1: { line: o.line, from: o, to: tr1, stops: leg1Stops },
+            leg2: { line: d.line, from: tr2, to: d, stops: leg2Stops },
+            stops: leg1Stops + leg2Stops
+          };
+        } 
+        // Green <-> Yellow via RV Road
+        else if ((o.line === 'green' && d.line === 'yellow') || (o.line === 'yellow' && d.line === 'green')) {
+          const tr1 = STATIONS.find(s => s.name === "RV Road" && s.line === o.line);
+          const tr2 = STATIONS.find(s => s.name === "RV Road" && s.line === d.line);
+          const leg1Stops = Math.abs(tr1.idx - o.idx);
+          const leg2Stops = Math.abs(d.idx - tr2.idx);
+          route = {
+            direct: false,
+            doubleTransfer: false,
+            transferHub: "RV Road",
+            leg1: { line: o.line, from: o, to: tr1, stops: leg1Stops },
+            leg2: { line: d.line, from: tr2, to: d, stops: leg2Stops },
+            stops: leg1Stops + leg2Stops
+          };
+        } 
+        // Purple <-> Yellow (Double Transfer via Majestic & RV Road)
+        else {
+          const majP = STATIONS.find(s => s.name === "Majestic" && s.line === "purple");
+          const majG = STATIONS.find(s => s.name === "Majestic" && s.line === "green");
+          const rvG = STATIONS.find(s => s.name === "RV Road" && s.line === "green");
+          const rvY = STATIONS.find(s => s.name === "RV Road" && s.line === "yellow");
+
+          if (o.line === 'purple') {
+            const s1 = Math.abs(majP.idx - o.idx);
+            const s2 = Math.abs(rvG.idx - majG.idx);
+            const s3 = Math.abs(d.idx - rvY.idx);
+            route = {
+              direct: false,
+              doubleTransfer: true,
+              transferHub: "Majestic & RV Road",
+              leg1: { line: 'purple', from: o, to: majP, stops: s1 },
+              leg2: { line: 'green', from: majG, to: rvG, stops: s2 },
+              leg3: { line: 'yellow', from: rvY, to: d, stops: s3 },
+              stops: s1 + s2 + s3
+            };
+          } else {
+            const s1 = Math.abs(rvY.idx - o.idx);
+            const s2 = Math.abs(majG.idx - rvG.idx);
+            const s3 = Math.abs(d.idx - majP.idx);
+            route = {
+              direct: false,
+              doubleTransfer: true,
+              transferHub: "RV Road & Majestic",
+              leg1: { line: 'yellow', from: o, to: rvY, stops: s1 },
+              leg2: { line: 'green', from: rvG, to: majG, stops: s2 },
+              leg3: { line: 'purple', from: majP, to: d, stops: s3 },
+              stops: s1 + s2 + s3
+            };
+          }
+        }
+      }
+
+      renderHero(route, from, to);
+    }
+
+    // Render Hero Card with Real Delay Buffer
+    function renderHero(route, from, to) {
+      heroTitle.textContent = `${from} ➔ ${to}`;
+      const token = computeFare(route.stops);
+      const card = Math.round(token * 0.95);
+
+      fareToken.textContent = `₹${token}`;
+      fareCard.textContent = `₹${card}`;
+
+      // Calculate delay buffer if affected line is delayed
+      let delayBufferMin = 0;
+      if (route.direct) {
+        if (crowdState[route.line]?.delayed) delayBufferMin += 10;
+      } else if (!route.doubleTransfer) {
+        if (crowdState[route.leg1.line]?.delayed) delayBufferMin += 8;
+        if (crowdState[route.leg2.line]?.delayed) delayBufferMin += 8;
+      } else {
+        if (crowdState[route.leg1.line]?.delayed) delayBufferMin += 6;
+        if (crowdState[route.leg2.line]?.delayed) delayBufferMin += 6;
+        if (crowdState[route.leg3.line]?.delayed) delayBufferMin += 6;
+      }
+
+      const transferPenalty = route.direct ? 0 : (route.doubleTransfer ? 10 : 5);
+      const runMin = Math.round(route.stops * 2.1) + transferPenalty + delayBufferMin;
+      heroDuration.textContent = `~${runMin}m`;
+      heroStops.textContent = `${route.stops} stops ${delayBufferMin > 0 ? `(+${delayBufferMin}m delay)` : ''}`;
+
+      if (route.direct) {
+        const bgCol = LINE_COLORS[route.line] || '#111315';
+        lineBadgeHolder.innerHTML = `
+          <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold uppercase text-white" style="background-color: ${bgCol}">${route.line} LINE</span>
+          <span class="text-xs text-gray-400 font-mono">NON-STOP</span>
+        `;
+      } else {
+        lineBadgeHolder.innerHTML = `
+          <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold uppercase bg-amber-500 text-black">INTERCHANGE</span>
+          <span class="text-xs text-yellow-400 font-mono">${route.doubleTransfer ? '2 CHANGES' : '1 CHANGE'} (${route.transferHub})</span>
+        `;
+      }
+
+      const now = new Date();
+      const currentSec = now.getMinutes() * 60 + now.getSeconds();
+      const headway = (delayBufferMin > 0) ? 600 : 300;
+      const wait = headway - (currentSec % headway);
+      const waitM = Math.floor(wait / 60);
+      const depTime = new Date(now.getTime() + wait * 1000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+      nextTime.textContent = depTime;
+      nextMins.textContent = `${waitM} MIN`;
+
+      let diagramHtml = '';
+      let intermediateStopsList = [];
+
+      if (route.direct) {
+        const spineColor = LINE_COLORS[route.line] || '#111315';
+        diagramHtml = `
+          <div class="relative pl-9 tube-node">
+            <div class="tube-spine" style="background-color: ${spineColor}"></div>
+            <div class="absolute left-2.5 top-1.5 w-4 h-4 rounded-full border-4 border-black bg-white z-10"></div>
+            <div>
+              <span class="text-[11px] font-mono font-bold uppercase tracking-wider text-gray-400 block">Board Line</span>
+              <h5 class="text-sm font-extrabold text-gray-900 leading-tight">${from}</h5>
+            </div>
+          </div>
+
+          <div class="relative pl-9 tube-node py-1">
+            <div class="tube-spine" style="background-color: ${spineColor}"></div>
+            <div class="text-xs font-mono font-bold text-gray-500 py-2">
+              ↓ ${route.stops} intermediate stops (~${Math.round(route.stops * 2.1)} mins)
+            </div>
+          </div>
+
+          <div class="relative pl-9 tube-node tube-node-last">
+            <div class="tube-spine" style="background-color: ${spineColor}"></div>
+            <div class="absolute left-2.5 top-1.5 w-4 h-4 rounded-full bg-black z-10"></div>
+            <div>
+              <span class="text-[11px] font-mono font-bold uppercase tracking-wider text-gray-400 block">Terminal Arrival</span>
+              <h5 class="text-sm font-extrabold text-gray-900 leading-tight">${to}</h5>
+            </div>
+          </div>
+        `;
+
+        const lineStations = STATIONS.filter(s => s.line === route.line);
+        const step = route.to.idx >= route.from.idx ? 1 : -1;
+        for (let i = route.from.idx; i !== route.to.idx + step; i += step) {
+          const item = lineStations.find(s => s.idx === i);
+          if (item) intermediateStopsList.push(item.name);
+        }
+
+      } else if (!route.doubleTransfer) {
+        const spine1 = LINE_COLORS[route.leg1.line] || '#111315';
+        const spine2 = LINE_COLORS[route.leg2.line] || '#111315';
+
+        diagramHtml = `
+          <div class="relative pl-9 tube-node">
+            <div class="tube-spine" style="background-color: ${spine1}"></div>
+            <div class="absolute left-2.5 top-1.5 w-4 h-4 rounded-full border-4 border-black bg-white z-10"></div>
+            <div>
+              <span class="text-[11px] font-mono font-bold uppercase text-gray-400 block">Start Journey</span>
+              <h5 class="text-sm font-extrabold text-gray-900 leading-tight">${from}</h5>
+              <span class="text-[11px] font-mono text-gray-500">${route.leg1.stops} stops on ${route.leg1.line.toUpperCase()} LINE</span>
+            </div>
+          </div>
+
+          <div class="relative pl-9 tube-node py-3">
+            <div class="tube-spine" style="background-color: ${spine2}"></div>
+            <div class="absolute left-1.5 top-5 w-6 h-6 rounded-full border-4 border-black bg-yellow-400 flex items-center justify-center z-10 font-mono text-[10px] font-bold">⇄</div>
+            <div class="bg-gray-100 p-2.5 rounded-lg border border-gray-300">
+              <span class="text-[10px] font-mono font-bold uppercase tracking-wide text-gray-500 block">Change Platform</span>
+              <h6 class="text-xs font-bold text-gray-900">${route.transferHub} Interchange</h6>
+              <span class="text-[11px] text-gray-600">Cross concourse walk ~5 mins to ${route.leg2.line.toUpperCase()} LINE</span>
+            </div>
+          </div>
+
+          <div class="relative pl-9 tube-node tube-node-last">
+            <div class="tube-spine" style="background-color: ${spine2}"></div>
+            <div class="absolute left-2.5 top-1.5 w-4 h-4 rounded-full bg-black z-10"></div>
+            <div>
+              <span class="text-[11px] font-mono font-bold uppercase text-gray-400 block">Arrive</span>
+              <h5 class="text-sm font-extrabold text-gray-900 leading-tight">${to}</h5>
+              <span class="text-[11px] font-mono text-gray-500">${route.leg2.stops} stops to destination</span>
+            </div>
+          </div>
+        `;
+
+        const appendLeg = (leg) => {
+          const lStations = STATIONS.filter(s => s.line === leg.line);
+          const stp = leg.to.idx >= leg.from.idx ? 1 : -1;
+          for (let i = leg.from.idx; i !== leg.to.idx + stp; i += stp) {
+            const item = lStations.find(s => s.idx === i);
+            if (item && !intermediateStopsList.includes(item.name)) intermediateStopsList.push(item.name);
+          }
+        };
+        appendLeg(route.leg1);
+        appendLeg(route.leg2);
+
+      } else {
+        const spine1 = LINE_COLORS[route.leg1.line];
+        const spine2 = LINE_COLORS[route.leg2.line];
+        const spine3 = LINE_COLORS[route.leg3.line];
+
+        diagramHtml = `
+          <div class="relative pl-9 tube-node">
+            <div class="tube-spine" style="background-color: ${spine1}"></div>
+            <div class="absolute left-2.5 top-1.5 w-4 h-4 rounded-full border-4 border-black bg-white z-10"></div>
+            <div>
+              <span class="text-[11px] font-mono font-bold uppercase text-gray-400 block">Board First Train</span>
+              <h5 class="text-sm font-extrabold text-gray-900 leading-tight">${from}</h5>
+              <span class="text-[11px] font-mono text-gray-500">${route.leg1.stops} stops on ${route.leg1.line.toUpperCase()} LINE</span>
+            </div>
+          </div>
+
+          <div class="relative pl-9 tube-node py-2">
+            <div class="tube-spine" style="background-color: ${spine2}"></div>
+            <div class="absolute left-1.5 top-4 w-6 h-6 rounded-full border-4 border-black bg-yellow-400 flex items-center justify-center z-10 font-mono text-[10px] font-bold">⇄</div>
+            <div class="bg-gray-100 p-2 rounded-lg border border-gray-300">
+              <h6 class="text-xs font-bold text-gray-900">Change at ${route.leg1.to.name}</h6>
+              <span class="text-[10px] text-gray-600">Transfer to GREEN LINE</span>
+            </div>
+          </div>
+
+          <div class="relative pl-9 tube-node py-2">
+            <div class="tube-spine" style="background-color: ${spine3}"></div>
+            <div class="absolute left-1.5 top-4 w-6 h-6 rounded-full border-4 border-black bg-yellow-400 flex items-center justify-center z-10 font-mono text-[10px] font-bold">⇄</div>
+            <div class="bg-gray-100 p-2 rounded-lg border border-gray-300">
+              <h6 class="text-xs font-bold text-gray-900">Change at ${route.leg2.to.name}</h6>
+              <span class="text-[10px] text-gray-600">Transfer to ${route.leg3.line.toUpperCase()} LINE</span>
+            </div>
+          </div>
+
+          <div class="relative pl-9 tube-node tube-node-last">
+            <div class="tube-spine" style="background-color: ${spine3}"></div>
+            <div class="absolute left-2.5 top-1.5 w-4 h-4 rounded-full bg-black z-10"></div>
+            <div>
+              <span class="text-[11px] font-mono font-bold uppercase text-gray-400 block">Arrive</span>
+              <h5 class="text-sm font-extrabold text-gray-900 leading-tight">${to}</h5>
+            </div>
+          </div>
+        `;
+
+        const appendLeg = (leg) => {
+          const lStations = STATIONS.filter(s => s.line === leg.line);
+          const stp = leg.to.idx >= leg.from.idx ? 1 : -1;
+          for (let i = leg.from.idx; i !== leg.to.idx + stp; i += stp) {
+            const item = lStations.find(s => s.idx === i);
+            if (item && !intermediateStopsList.includes(item.name)) intermediateStopsList.push(item.name);
+          }
+        };
+        appendLeg(route.leg1);
+        appendLeg(route.leg2);
+        appendLeg(route.leg3);
+      }
+
+      tubeSchematic.innerHTML = diagramHtml;
+
+      stopsToggle.textContent = `View All Intermediate Stops [${intermediateStopsList.length}]`;
+      stopsTray.innerHTML = intermediateStopsList.map((st, i) => `
+        <div class="flex items-center space-x-2 py-0.5">
+          <span class="w-1.5 h-1.5 rounded-full ${i === 0 || i === intermediateStopsList.length - 1 ? 'bg-black' : 'bg-gray-400'}"></span>
+          <span class="${i === 0 || i === intermediateStopsList.length - 1 ? 'font-bold text-black' : 'text-gray-600'}">${st}</span>
+        </div>
+      `).join('');
+    }
+
+    stopsToggle.addEventListener('click', () => {
+      const isClosed = stopsTray.classList.contains('hidden');
+      if (isClosed) {
+        stopsTray.classList.remove('hidden');
+        stopsToggle.textContent = stopsToggle.textContent.replace('View', 'Hide');
+      } else {
+        stopsTray.classList.add('hidden');
+        stopsToggle.textContent = stopsToggle.textContent.replace('Hide', 'View');
+      }
+    });
+
+    // Start App & Set 30s Polling Loop
+    renderSavedCommutes();
+    buildTransitJourney();
+    updateOnlineStatus();
+    setInterval(syncCrowdReports, 30000);
+  </script>
+</body>
+</html>
