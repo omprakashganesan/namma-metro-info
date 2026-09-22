@@ -55,7 +55,7 @@
 </head>
 <body class="min-h-screen flex flex-col justify-between selection:bg-black selection:text-white font-sans">
 
-  <!-- Connectivity Banner (Auto-shows when inside subway tunnel / offline) -->
+  <!-- Connectivity Banner -->
   <div id="offlineBar" class="hidden bg-gray-900 text-amber-400 text-xs font-mono py-1 px-4 text-center border-b border-gray-700">
     ⚡ Tunnel Mode Active — Running offline from local cache.
   </div>
@@ -64,7 +64,6 @@
   <header class="bg-[#111315] text-white border-b-4 border-[#0019A8] sticky top-0 z-30">
     <div class="max-w-xl mx-auto px-4 py-3 flex items-center justify-between">
       <div class="flex items-center space-x-3">
-        <!-- TfL Style Metro Roundel -->
         <div class="relative w-8 h-8 flex items-center justify-center flex-shrink-0">
           <div class="w-8 h-8 rounded-full border-[5px] border-[#EE2E24]"></div>
           <div class="absolute w-10 h-2 bg-white flex items-center justify-center">
@@ -77,7 +76,6 @@
         </div>
       </div>
 
-      <!-- Live Network Status Indicator -->
       <div class="flex items-center space-x-2">
         <span id="statusPingDot" class="inline-block w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
         <span id="statusLabel" class="text-xs font-mono font-semibold tracking-wider text-gray-300">LINES NORMAL</span>
@@ -113,12 +111,10 @@
       </div>
 
       <div class="relative space-y-2">
-        <!-- Swap Button -->
         <button id="swapBtn" title="Reverse Journey" class="absolute right-3 top-1/2 -translate-y-1/2 z-10 w-8 h-8 rounded-full bg-white hover:bg-gray-100 border-2 border-black flex items-center justify-center text-black shadow-sm transition active:scale-90">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"/></svg>
         </button>
 
-        <!-- From Input -->
         <div class="relative">
           <label for="fromInput" class="block text-[10px] font-mono font-bold uppercase text-gray-500">From</label>
           <div class="relative">
@@ -128,7 +124,6 @@
           </div>
         </div>
 
-        <!-- To Input -->
         <div class="relative">
           <label for="toInput" class="block text-[10px] font-mono font-bold uppercase text-gray-500">To</label>
           <div class="relative">
@@ -139,14 +134,12 @@
         </div>
       </div>
 
-      <!-- Quick Popular Shortcuts -->
       <div class="pt-1 flex flex-wrap gap-1.5" id="quickPills"></div>
     </section>
 
     <!-- Transit Hero Output Card -->
     <section id="heroCard" class="bg-white rounded-xl border-2 border-[#111315] shadow-[4px_4px_0px_0px_#111315] overflow-hidden">
       
-      <!-- Routing Header -->
       <div class="p-4 bg-[#111315] text-white flex justify-between items-start">
         <div class="space-y-1">
           <div id="lineBadgeHolder" class="flex items-center space-x-2"></div>
@@ -158,7 +151,6 @@
         </div>
       </div>
 
-      <!-- Fare Bar -->
       <div class="grid grid-cols-2 divide-x-2 divide-black border-b-2 border-black bg-gray-50 text-xs font-mono">
         <div class="p-3">
           <span class="text-[10px] text-gray-500 block uppercase font-bold">Standard Ticket</span>
@@ -172,7 +164,6 @@
         </div>
       </div>
 
-      <!-- Next Departure Platform Feed -->
       <div class="p-4 bg-yellow-50/50 border-b-2 border-black flex items-center justify-between">
         <div>
           <span class="text-[10px] font-mono font-bold uppercase tracking-wider text-amber-900 block">Platform Departure</span>
@@ -186,13 +177,10 @@
         </div>
       </div>
 
-      <!-- London Tube Line Schematic -->
       <div class="p-5 space-y-4">
         <h4 class="text-xs font-mono font-bold uppercase text-gray-500 tracking-wider">Itinerary Schematic</h4>
-        
         <div id="tubeSchematic" class="relative pl-3 space-y-6"></div>
 
-        <!-- Collapsed Full Stops List -->
         <div class="pt-2">
           <button id="stopsToggle" class="w-full py-2 bg-gray-100 hover:bg-gray-200 border-2 border-black rounded-lg text-xs font-mono font-bold tracking-wider uppercase transition">
             View All Intermediate Stops [36]
@@ -214,7 +202,7 @@
       </button>
     </section>
 
-    <!-- Anonymous Local Favourites Bar -->
+    <!-- Local Commutes Bar -->
     <section class="bg-white rounded-xl border-2 border-[#111315] p-3 flex items-center justify-between text-xs">
       <span class="font-mono font-bold uppercase text-gray-600">Saved Commutes:</span>
       <div class="flex items-center space-x-2" id="savedCommutesContainer"></div>
@@ -222,7 +210,7 @@
 
   </main>
 
-  <!-- Report Delay Popup Modal -->
+  <!-- Report Modal -->
   <div id="reportModal" class="hidden fixed inset-0 bg-black/60 z-50 flex items-end sm:items-center justify-center p-4">
     <div class="bg-white border-4 border-black rounded-2xl max-w-sm w-full p-5 space-y-4 shadow-[6px_6px_0px_0px_#111315]">
       <div class="flex justify-between items-center border-b-2 border-gray-100 pb-2">
@@ -252,7 +240,7 @@
     </div>
   </div>
 
-  <!-- Clear Legally Compliant Footer -->
+  <!-- Footer -->
   <footer class="max-w-xl mx-auto w-full px-4 py-4 text-center text-xs font-mono text-gray-500 border-t border-gray-200 space-y-1">
     <p class="font-bold text-gray-700">Namma Metro Info • Independent Commuter Guide</p>
     <p class="text-[10px] text-gray-400">
@@ -261,9 +249,7 @@
   </footer>
 
   <script>
-    // --- COMPLETE BENGALURU METRO NETWORK DIRECTORY ---
     const STATIONS = [
-      // Purple Line (43.49 km)
       { id: "P01", name: "Whitefield", full: "Whitefield (Kadugodi)", line: "purple", idx: 0, lat: 12.9961, lng: 77.7612 },
       { id: "P02", name: "Hopefarm", full: "Hopefarm Channasandra", line: "purple", idx: 1, lat: 12.9845, lng: 77.7511 },
       { id: "P03", name: "Kadugodi Tree Park", full: "Kadugodi Tree Park", line: "purple", idx: 2, lat: 12.9882, lng: 77.7420 },
@@ -301,8 +287,6 @@
       { id: "P35", name: "Kengeri Bus Terminal", full: "Kengeri Bus Terminal", line: "purple", idx: 34, lat: 12.9118, lng: 77.4891 },
       { id: "P36", name: "Kengeri", full: "Kengeri", line: "purple", idx: 35, lat: 12.9083, lng: 77.4789 },
       { id: "P37", name: "Challaghatta", full: "Challaghatta", line: "purple", idx: 36, lat: 12.9008, lng: 77.4641 },
-
-      // Green Line (33.46 km)[cite: 1]
       { id: "G01", name: "Madavara", full: "Madavara (BIEC)", line: "green", idx: 0, lat: 13.0642, lng: 77.4851 },
       { id: "G02", name: "Chikkabidarakallu", full: "Chikkabidarakallu", line: "green", idx: 1, lat: 13.0560, lng: 77.4920 },
       { id: "G03", name: "Manjunathanagar", full: "Manjunathanagar", line: "green", idx: 2, lat: 13.0510, lng: 77.4960 },
@@ -335,8 +319,6 @@
       { id: "G30", name: "Vajarahalli", full: "Vajarahalli", line: "green", idx: 29, lat: 12.8682, lng: 77.5524 },
       { id: "G31", name: "Thalaghattapura", full: "Thalaghattapura", line: "green", idx: 30, lat: 12.8631, lng: 77.5412 },
       { id: "G32", name: "Silk Institute", full: "Silk Institute", line: "green", idx: 31, lat: 12.8617, lng: 77.5305 },
-
-      // Yellow Line (19.15 km)[cite: 1]
       { id: "Y01", name: "RV Road", full: "Rashtreeya Vidyalaya Road", line: "yellow", interchange: true, idx: 0, lat: 12.9216, lng: 77.5801 },
       { id: "Y02", name: "Ragigudda", full: "Ragigudda", line: "yellow", idx: 1, lat: 12.9172, lng: 77.5910 },
       { id: "Y03", name: "Jayadeva Hospital", full: "Jayadeva Hospital", line: "yellow", idx: 2, lat: 12.9168, lng: 77.6012 },
@@ -355,20 +337,14 @@
       { id: "Y16", name: "Bommasandra", full: "Delta Electronics Bommasandra", line: "yellow", idx: 15, lat: 12.8010, lng: 77.6990 }
     ];
 
-    const LINE_COLORS = {
-      purple: '#7B2CBF',
-      green: '#007A3D',
-      yellow: '#EAA221'
-    };
+    const LINE_COLORS = { purple: '#7B2CBF', green: '#007A3D', yellow: '#EAA221' };
 
-    // --- CROWDSOURCED DELAY ENGINE ---
     let crowdState = {
       purple: { count: 0, delayed: false },
       green: { count: 0, delayed: false },
       yellow: { count: 0, delayed: false }
     };
 
-    // DOM Elements
     const fromInput = document.getElementById('fromInput');
     const toInput = document.getElementById('toInput');
     const fromDrop = document.getElementById('fromDrop');
@@ -404,7 +380,6 @@
     const closeModalBtn = document.getElementById('closeModalBtn');
     const reportSuccessMsg = document.getElementById('reportSuccessMsg');
 
-    // Default route
     fromInput.value = "Whitefield";
     toInput.value = "Challaghatta";
 
@@ -428,7 +403,6 @@
       saveAnonymousCommute(from, to);
     };
 
-    // --- OFFLINE / ONLINE WATCHDOG ---
     function updateOnlineStatus() {
       if (navigator.onLine) {
         offlineBar.classList.add('hidden');
@@ -440,11 +414,9 @@
     window.addEventListener('online', updateOnlineStatus);
     window.addEventListener('offline', updateOnlineStatus);
 
-    // --- CROWD DELAY SYNC (15-Minute Rolling Quorum) ---
     function syncCrowdReports() {
       const savedReports = JSON.parse(localStorage.getItem('np_crowd_reports') || '[]');
       const now = Date.now();
-      // Keep only reports within the last 15 minutes (900,000 ms)
       const activeReports = savedReports.filter(r => (now - r.timestamp) < 15 * 60 * 1000);
       localStorage.setItem('np_crowd_reports', JSON.stringify(activeReports));
 
@@ -482,7 +454,6 @@
       buildTransitJourney();
     }
 
-    // Modal Controller
     openReportModalBtn.addEventListener('click', () => {
       reportModal.classList.remove('hidden');
       reportSuccessMsg.classList.add('hidden');
@@ -495,7 +466,6 @@
     window.submitDelayReport = (line) => {
       const now = Date.now();
       const lastReport = localStorage.getItem(`np_last_report_${line}`);
-      // Prevent rapid spam from same user (1 report per 10 mins per line)
       if (lastReport && (now - parseInt(lastReport)) < 10 * 60 * 1000) {
         alert("You already reported a delay on this line recently. Thank you!");
         reportModal.classList.add('hidden');
@@ -514,7 +484,6 @@
       }, 1000);
     };
 
-    // Autocomplete Dropdown Logic
     function wireAutocomplete(input, drop) {
       input.addEventListener('input', () => {
         const q = input.value.trim().toLowerCase();
@@ -569,7 +538,6 @@
       saveAnonymousCommute(fromInput.value, toInput.value);
     });
 
-    // Zero-PII Anonymous Local Bookmarks
     function saveAnonymousCommute(from, to) {
       if (!from || !to || from === to) return;
       let recents = JSON.parse(localStorage.getItem('np_recents') || '[]');
@@ -597,7 +565,6 @@
       }).join('');
     }
 
-    // Geolocation "Locate Me" Button
     locBtn.addEventListener('click', () => {
       if (!('geolocation' in navigator)) return;
       locLabel.textContent = "Scanning...";
@@ -625,7 +592,6 @@
       );
     });
 
-    // Official BMRCL Fare Slabs
     function computeFare(stops) {
       if (stops <= 0) return 10;
       if (stops <= 2) return 10;
@@ -633,10 +599,9 @@
       if (stops <= 6) return 30;
       if (stops <= 8) return 40;
       if (stops <= 10) return 50;
-      return 60; // Standard network ceiling
+      return 60;
     }
 
-    // Core Route Planning Calculation
     function buildTransitJourney() {
       const from = fromInput.value.trim();
       const to = toInput.value.trim();
@@ -662,7 +627,6 @@
 
       let route = null;
 
-      // 1. Direct line check
       for (let o of origins) {
         for (let d of dests) {
           if (o.line === d.line) {
@@ -679,12 +643,10 @@
         if (route) break;
       }
 
-      // 2. Transfer check
       if (!route) {
         const o = origins[0];
         const d = dests[0];
 
-        // Purple <-> Green via Majestic
         if ((o.line === 'purple' && d.line === 'green') || (o.line === 'green' && d.line === 'purple')) {
           const tr1 = STATIONS.find(s => s.name === "Majestic" && s.line === o.line);
           const tr2 = STATIONS.find(s => s.name === "Majestic" && s.line === d.line);
@@ -698,9 +660,7 @@
             leg2: { line: d.line, from: tr2, to: d, stops: leg2Stops },
             stops: leg1Stops + leg2Stops
           };
-        } 
-        // Green <-> Yellow via RV Road
-        else if ((o.line === 'green' && d.line === 'yellow') || (o.line === 'yellow' && d.line === 'green')) {
+        } else if ((o.line === 'green' && d.line === 'yellow') || (o.line === 'yellow' && d.line === 'green')) {
           const tr1 = STATIONS.find(s => s.name === "RV Road" && s.line === o.line);
           const tr2 = STATIONS.find(s => s.name === "RV Road" && s.line === d.line);
           const leg1Stops = Math.abs(tr1.idx - o.idx);
@@ -713,9 +673,7 @@
             leg2: { line: d.line, from: tr2, to: d, stops: leg2Stops },
             stops: leg1Stops + leg2Stops
           };
-        } 
-        // Purple <-> Yellow (Double Transfer via Majestic & RV Road)
-        else {
+        } else {
           const majP = STATIONS.find(s => s.name === "Majestic" && s.line === "purple");
           const majG = STATIONS.find(s => s.name === "Majestic" && s.line === "green");
           const rvG = STATIONS.find(s => s.name === "RV Road" && s.line === "green");
@@ -754,7 +712,6 @@
       renderHero(route, from, to);
     }
 
-    // Render Hero Card with Real Delay Buffer
     function renderHero(route, from, to) {
       heroTitle.textContent = `${from} ➔ ${to}`;
       const token = computeFare(route.stops);
@@ -763,7 +720,6 @@
       fareToken.textContent = `₹${token}`;
       fareCard.textContent = `₹${card}`;
 
-      // Calculate delay buffer if affected line is delayed
       let delayBufferMin = 0;
       if (route.direct) {
         if (crowdState[route.line]?.delayed) delayBufferMin += 10;
@@ -969,7 +925,6 @@
       }
     });
 
-    // Start App & Set 30s Polling Loop
     renderSavedCommutes();
     buildTransitJourney();
     updateOnlineStatus();
